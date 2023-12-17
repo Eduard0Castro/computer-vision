@@ -1,0 +1,3 @@
+/home/eduardocastro/Computer Vision/Projects/CMakeFiles/rebuild_cache.dir
+/home/eduardocastro/Computer Vision/Projects/CMakeFiles/edit_cache.dir
+/home/eduardocastro/Computer Vision/Projects/CMakeFiles/Projects.dir
