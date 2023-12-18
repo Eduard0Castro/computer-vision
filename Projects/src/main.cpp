@@ -1,29 +1,46 @@
 #include<iostream>
-#include <vector>
 #include <opencv2/opencv.hpp>
 
 using namespace std;
+
+cv::Mat negative(cv::Mat);
+cv::Mat resize(cv::Mat);
 
 int main(){
 
 
     cv::String path = "/home/eduardocastro/Computer_Vision/Projects/Images/eneas.jpg";
-    cv::Mat eneas = cv::imread(path), neg;
-    cv::Mat cam;
-    int coordenada[4] = {};
+    cv::Mat eneas = cv::imread(path), neg, resized;
 
     if (eneas.empty()){
         cerr << "Erro ao carregar imagem\n";
         return -1;
     }
 
-    neg = eneas.clone(); //cria uma cópia idependente
-
     cv::imshow("Nosso nome é Enéas", eneas);
 
+    neg = negative(eneas);    
+    resized = resize(eneas);
+ 
+    //cv::bitwise_not(eneas, neg); função para negativar toda a imagem direto
+    //cv::imwrite("../Projects/Images/eneas_negativo.jpg", neg );
+    cv::imshow("Nosso nome é Enéas negativo", neg);
+    cv::imshow("Redimensionada: ", resized);
 
-    int rows = eneas.rows;
-    int cols = eneas.cols;
+    cv::waitKey();
+
+    return 0;
+
+}
+
+cv:: Mat negative(cv::Mat img){
+    
+    cv::Mat neg;
+    int coordenada[4] = {};
+    int rows = img.rows;
+    int cols = img.cols;
+
+    neg = img.clone(); //Cria uma cópia independente
 
     cout << rows <<  " x " << cols << endl;
     cout << endl;
@@ -57,20 +74,37 @@ int main(){
 
     for (int i = coordenada[0]; i < coordenada[2]; i++){
         for (int j = coordenada[1]; j < coordenada[3]; j++){
-            neg.at<cv::Vec3b>(i, j)[0] = 255 - eneas.at<cv::Vec3b>(i, j)[0];
-            neg.at<cv::Vec3b>(i, j)[1] = 255 - eneas.at<cv::Vec3b>(i, j)[1];
-            neg.at<cv::Vec3b>(i, j)[2] = 255 - eneas.at<cv::Vec3b>(i, j)[2];
+            neg.at<cv::Vec3b>(i, j)[0] = 255 - img.at<cv::Vec3b>(i, j)[0];
+            neg.at<cv::Vec3b>(i, j)[1] = 255 - img.at<cv::Vec3b>(i, j)[1];
+            neg.at<cv::Vec3b>(i, j)[2] = 255 - img.at<cv::Vec3b>(i, j)[2];
         }
     }
+
+    return neg;
+}
+
+cv::Mat resize(cv::Mat img){
+    cv::Mat resized;
+    int width, height;
+    int rows = img.rows, cols = img.cols;
+
+    resized = img.clone();
+    cout << rows << " x " << cols << endl;
+
+
+    do{
+    cout << "Digite um valor para a nova altura: ";
+    cin >> height;
+    }
+    while(height <= 0 || height > rows);
     
- 
-    //cv::bitwise_not(eneas, neg); função para negativar toda a imagem direto
-    //cv::imwrite("../Projects/Images/eneas_negativo.jpg", neg );
-    cv::imshow("Nosso nome é Enéas negativo", neg);
+    do{
+    cout << "Digite um valor para a nova largura: ";
+    cin >> width;
+    }
+    while(width <= 0 || width > cols);
 
+    cv::resize(img,resized, cv::Size(width, height));
 
-    cv::waitKey();
-
-    return 0;
-
+    return resized;
 }
