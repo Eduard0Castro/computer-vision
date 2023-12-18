@@ -9,7 +9,7 @@ cv::Mat resize(cv::Mat);
 int main(){
 
 
-    cv::String path = "./Projects/Images/eneas.jpg";
+    cv::String path = "../Projects/Images/eneas.jpg";
     cv::Mat eneas = cv::imread(path), neg, resized;
 
     if (eneas.empty()){
@@ -23,7 +23,7 @@ int main(){
     resized = resize(eneas);
  
     //cv::bitwise_not(eneas, neg); função para negativar toda a imagem direto
-    //cv::imwrite("../Projects/Images/eneas_negativo.jpg", neg );
+    cv::imwrite("../Projects/Images/eneas_resized.jpg", resized );
     cv::imshow("Nosso nome é Enéas negativo", neg);
     cv::imshow("Redimensionada: ", resized);
 
@@ -96,13 +96,13 @@ cv::Mat resize(cv::Mat img){
     cout << "Digite um valor para a nova altura: ";
     cin >> height;
     }
-    while(height <= 0 || height > rows);
+    while(height <= 0 || height > 3*rows);
     
     do{
     cout << "Digite um valor para a nova largura: ";
     cin >> width;
     }
-    while(width <= 0 || width > cols);
+    while(width <= 0 || width > 3*cols);
 
     cv::resize(img,resized, cv::Size(width, height));
 
