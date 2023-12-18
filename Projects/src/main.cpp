@@ -9,7 +9,7 @@ cv::Mat resize(cv::Mat);
 int main(){
 
 
-    cv::String path = "/home/eduardocastro/Computer_Vision/Projects/Images/eneas.jpg";
+    cv::String path = "./Projects/Images/eneas.jpg";
     cv::Mat eneas = cv::imread(path), neg, resized;
 
     if (eneas.empty()){
