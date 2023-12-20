@@ -5,27 +5,31 @@ using namespace std;
 
 cv::Mat negative(cv::Mat);
 cv::Mat resize(cv::Mat);
+cv::Mat swap(cv::Mat);
 
 int main(){
 
 
     cv::String path = "../Projects/Images/eneas.jpg";
-    cv::Mat eneas = cv::imread(path), neg, resized;
+    cv::Mat eneas = cv::imread(path), neg, resized, swapped;
 
     if (eneas.empty()){
         cerr << "Erro ao carregar imagem\n";
         return -1;
     }
 
-    cv::imshow("Nosso nome é Enéas", eneas);
+    
 
     neg = negative(eneas);    
     resized = resize(eneas);
+    swapped = swap(eneas);
  
     //cv::bitwise_not(eneas, neg); função para negativar toda a imagem direto
     cv::imwrite("../Projects/Images/eneas_resized.jpg", resized );
     cv::imshow("Nosso nome é Enéas negativo", neg);
     cv::imshow("Redimensionada: ", resized);
+    cv::imshow("Swapped", swapped);
+    cv::imshow("Nosso nome é Enéas", eneas);
 
     cv::waitKey();
 
@@ -107,4 +111,30 @@ cv::Mat resize(cv::Mat img){
     cv::resize(img,resized, cv::Size(width, height));
 
     return resized;
+}
+
+cv::Mat swap(cv::Mat img){
+
+
+    int rows = img.rows, cols = img.cols;
+    cv::Mat3b swapped(rows, cols, cv::Vec3b(0,0,0));
+
+    cv::Rect rois[4] = {
+      
+        cv::Rect(0, 0, cols/2, rows/2),
+        cv::Rect(cols/2, 0, cols/2, rows/2),
+        cv::Rect(0, rows/2, cols/2, rows/2),
+        cv::Rect(cols/2, rows/2, cols/2, rows/2)
+
+    };
+
+    int sequence[4] = {3,1,2,0};
+    
+    for (int i = 0; i <= 3; i++){
+     
+        cv::Mat region (img, rois[i]);
+        region.copyTo(swapped(rois[sequence[i]]));
+    }
+
+    return swapped;
 }
