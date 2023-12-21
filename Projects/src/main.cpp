@@ -6,6 +6,7 @@ using namespace std;
 cv::Mat negative(cv::Mat);
 cv::Mat resize(cv::Mat);
 cv::Mat swap(cv::Mat);
+void cut(cv::Mat);
 
 int main(){
 
@@ -23,7 +24,8 @@ int main(){
     neg = negative(eneas);    
     resized = resize(eneas);
     swapped = swap(eneas);
- 
+    cut(eneas);
+    
     //cv::bitwise_not(eneas, neg); função para negativar toda a imagem direto
     cv::imwrite("../Projects/Images/eneas_resized.jpg", resized );
     cv::imshow("Nosso nome é Enéas negativo", neg);
@@ -137,4 +139,19 @@ cv::Mat swap(cv::Mat img){
     }
 
     return swapped;
+}
+
+void cut(cv::Mat img){
+
+    cv::Mat copia = img.clone();
+    int rows = copia.rows, cols = copia.cols;
+    cv::Mat cortes;
+    int n_cortes = 5;
+
+    for (int i = 0; i < n_cortes; i++){
+      
+        cortes = copia(cv::Rect(0, rows*i/n_cortes, cols, rows/n_cortes));
+        cv::imwrite(cv::format("../Projects/Images/eneas%d.jpg", i+1), cortes);
+    }
+
 }
