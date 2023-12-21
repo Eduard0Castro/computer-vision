@@ -7,12 +7,13 @@ cv::Mat negative(cv::Mat);
 cv::Mat resize(cv::Mat);
 cv::Mat swap(cv::Mat);
 void cut(cv::Mat);
+cv::Mat face_detection(cv::Mat);
 
 int main(){
 
 
     cv::String path = "../Projects/Images/eneas.jpg";
-    cv::Mat eneas = cv::imread(path), neg, resized, swapped;
+    cv::Mat eneas = cv::imread(path), neg, resized, swapped, faces;
 
     if (eneas.empty()){
         cerr << "Erro ao carregar imagem\n";
@@ -25,12 +26,14 @@ int main(){
     resized = resize(eneas);
     swapped = swap(eneas);
     cut(eneas);
+    faces = face_detection(eneas);
     
     //cv::bitwise_not(eneas, neg); função para negativar toda a imagem direto
     cv::imwrite("../Projects/Images/eneas_resized.jpg", resized );
     cv::imshow("Nosso nome é Enéas negativo", neg);
     cv::imshow("Redimensionada: ", resized);
     cv::imshow("Swapped", swapped);
+    cv::imshow("Faces detectadas", faces);
     cv::imshow("Nosso nome é Enéas", eneas);
 
     cv::waitKey();
@@ -154,4 +157,25 @@ void cut(cv::Mat img){
         cv::imwrite(cv::format("../Projects/Images/eneas%d.jpg", i+1), cortes);
     }
 
+}
+
+cv::Mat face_detection(cv::Mat img){
+    
+    cv::String haar_cascade = "../Projects/XML/haarcascade_frontalface_default.xml";
+    vector<cv::Rect> detects;
+    cv::CascadeClassifier detect;
+    detect.load(haar_cascade);
+    cv::Mat detections = img.clone();
+
+    if (detect.empty()){
+        cerr << "Não possível carregar o arquivo .XML" << endl;
+    }
+
+    detect.detectMultiScale(img, detects);
+
+    for (int i = 0; i < detects.size();i++){
+        cv::rectangle(detections, detects[i].tl(), detects[i].br(), cv::Scalar(0, 255, 0), 2);  
+    }
+
+    return detections;
 }
