@@ -31,6 +31,8 @@ class ImagesProcessing{
         cv::Mat swap();
         cv::Mat faceDetection();
         void cut();
+        cv::Mat warp();
+        cv::Mat drawContours();
 };
 
 cv::Mat ImagesProcessing::negative(){
@@ -154,6 +156,73 @@ void ImagesProcessing::cut(){
                       copy.size().width, copy.size().height/n_cortes));
         cv::imwrite(cv::format("../Projects/Images/eneas%d.jpg", i+1), cortes);
     }
+}
+
+cv::Mat ImagesProcessing::warp(){
+    cv::Mat warped;
+    float width = 400, height = 450;
+
+
+    cv::Point2f src[4] = {{457, 179}, {745, 57}, 
+                         {47, 476}, {664,284}}; //dados para a imagem "building.jpg"
+    cv::Point2f destiny[4] = {{0,0}, {width, 0}, 
+                             {0, height}, {width, height}};
+                             
+
+    cv::warpPerspective(copy, warped, cv::getPerspectiveTransform(src, destiny), 
+                        cv::Size(width, height));
+
+    return warped;
+}
+
+cv::Mat ImagesProcessing::drawContours(){
+    
+    cv::Mat contours = copy.clone(), bin, dilated, kernel;
+    cv::String name;
+    vector<vector<cv::Point>> contornos, lados;
+    vector <cv::Vec4i> hierarquia;
+    vector<cv::Rect> retangulo;
+    float perimetro;
+    int cont = 0;
+    
+
+    //kernel é uma matriz retangular (shape = 1) de tamanho 3x3
+    kernel = cv::getStructuringElement(1, cv::Size(3,3));
+
+    //threshold 1 e 2 são as intensidades de gradiente aceitas
+    cv::Canny(copy, bin, 0, 200); 
+
+    cv::dilate(bin, dilated, kernel);
+
+    cv::findContours(dilated, contornos, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_NONE);
+    lados = contornos;
+
+    retangulo.resize(contornos.size());
+
+    for(int i = 0; i < contornos.size(); i++){
+        perimetro = cv::arcLength(contornos[i], true);
+        cv::approxPolyDP(contornos[i], lados[i], 0.01*perimetro, true); 
+        retangulo[i] = cv::boundingRect(lados[i]);
+
+        if (lados.size() == 4){
+            name = "Retangulo";
+
+            if (perimetro >= 100){
+                cv::drawContours(contours, lados, i, cv::Scalar(0,0,255), 2);
+                cv::putText(contours, name, cv::Point(retangulo[i].x, retangulo[i].y), 
+                            cv::FONT_HERSHEY_DUPLEX, 1, cv::Scalar(0,255,0), 1, 2);
+            }
+
+            cont++;
+            
+        }
+
+
+    }
+
+    cout << endl << cont << endl;
+    return contours;
+
 }
 
 
