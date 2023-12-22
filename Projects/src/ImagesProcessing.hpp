@@ -11,7 +11,6 @@ class ImagesProcessing{
         cv::Mat copy;
         int rows, cols;
 
-
     public:
 
         ImagesProcessing(cv::Mat img){
@@ -154,6 +153,7 @@ void ImagesProcessing::cut(){
     for (int i = 0; i < n_cortes; i++){
         cortes = copy(cv::Rect(0, rows*i/n_cortes, 
                       copy.size().width, copy.size().height/n_cortes));
+
         cv::imwrite(cv::format("../Projects/Images/eneas%d.jpg", i+1), cortes);
     }
 }
@@ -165,6 +165,7 @@ cv::Mat ImagesProcessing::warp(){
 
     cv::Point2f src[4] = {{457, 179}, {745, 57}, 
                          {47, 476}, {664,284}}; //dados para a imagem "building.jpg"
+
     cv::Point2f destiny[4] = {{0,0}, {width, 0}, 
                              {0, height}, {width, height}};
                              
@@ -200,6 +201,7 @@ cv::Mat ImagesProcessing::drawContours(){
     retangulo.resize(contornos.size());
 
     for(int i = 0; i < contornos.size(); i++){
+
         perimetro = cv::arcLength(contornos[i], true);
         cv::approxPolyDP(contornos[i], lados[i], 0.01*perimetro, true); 
         retangulo[i] = cv::boundingRect(lados[i]);
@@ -213,10 +215,13 @@ cv::Mat ImagesProcessing::drawContours(){
                             cv::FONT_HERSHEY_DUPLEX, 1, cv::Scalar(0,255,0), 1, 2);
             }
 
-            cont++;
-            
+            cont++;  
         }
 
+        else{
+            cv::putText(contours, cv:: String("No contours!"), cv::Point(5,20),
+                        cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0,0,255), 1.5);
+        }
 
     }
 
@@ -224,6 +229,5 @@ cv::Mat ImagesProcessing::drawContours(){
     return contours;
 
 }
-
 
 #endif

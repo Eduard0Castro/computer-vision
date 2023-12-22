@@ -5,12 +5,13 @@ int main(){
     cv::String path = "../Projects/Images/eneas.jpg";
     cv::String build = "../Projects/Images/building.jpg";
     cv::Mat eneas = cv::imread(path), neg, resized, swapped, faces, warped, contours;
-    cv::Mat building = cv::imread(build);
-    ImagesProcessing teste(eneas);
+
     if (eneas.empty()){
         cerr << "Erro ao carregar imagem\n";
         return -1;
     }
+
+    ImagesProcessing teste(eneas);
 
     neg = teste.negative();
     resized = teste.resize();
