@@ -27,7 +27,7 @@ int main(){
     pixelhue = hue.at<uchar>(150,150);
     pixelblue = channelsbgr[0].at<uchar>(cv::Point(150,150));
 
-    //combinar canais bgr novamente:
+    //combinar canais hsv novamente:
     cv::merge(channels, vorta);
     cv::cvtColor(vorta, vorta, cv::COLOR_HSV2BGR);
 
