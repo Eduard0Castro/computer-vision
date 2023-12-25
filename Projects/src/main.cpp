@@ -4,25 +4,43 @@ int main(){
 
 
     cv::String path = "../Projects/Images/fruits.jpg";
-    vector<cv::Mat> channels;
-    cv::Mat img = cv::imread(path), blue, green, red, vorta;
-
+    vector<cv::Mat> channels, channelsbgr;
+    cv::Mat img = cv::imread(path), hue, saturation, value, vorta;
+    cv::Vec3b valorPixel;
+    int pixelhue, pixelblue;
+    
     cv::resize(img, img, cv::Size(400, 300));
+    cv::cvtColor(img, vorta, cv::COLOR_BGR2HSV);
 
-    //segmentar canais bgr:
-    cv::split(img, channels);
+    valorPixel = img.at<cv::Vec3b>(cv::Point(150,150));
 
-    blue = channels[0];
-    green = channels[1];
-    red = channels[2];
+    //segmentar canais hsv e bgr:
+    cv::split(vorta, channels);
+    cv::split(img, channelsbgr);
+
+    hue = channels[0];
+    saturation = channels[1];
+    value = channels[2];
+    
+    hue = 0.55*hue;
+
+    pixelhue = hue.at<uchar>(150,150);
+    pixelblue = channelsbgr[0].at<uchar>(cv::Point(150,150));
 
     //combinar canais bgr novamente:
     cv::merge(channels, vorta);
+    cv::cvtColor(vorta, vorta, cv::COLOR_HSV2BGR);
+
+
     cv::imshow("Original", img);
-    cv::imshow("Blue", blue);
-    cv::imshow("Green", green);
-    cv::imshow("Red", red);
-    cv::imshow("Vorta", vorta);
+    cv::imshow("Hue", hue);
+    cv::imshow("Saturation", saturation);
+    cv::imshow("Value", value);
+    cv::imshow("Modificada ", vorta);
+    
+    cout << valorPixel << endl;
+    cout << pixelblue << endl;
+    cout << pixelhue << endl;
 
     cv::waitKey(0);
 
