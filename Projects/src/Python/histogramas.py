@@ -2,11 +2,19 @@ import cv2
 import pathlib
 from matplotlib import pyplot as grafico
 
-img_path = pathlib.Path(__file__)
-print(img_path)
-img = cv2.imread("/home/eduardocastro/Computer_Vision/Projects/Images/fruits.jpg")
+img_path = pathlib.Path().absolute().parent.parent
+img = cv2.imread(f"{img_path}/Images/folha.bmp")
   
-cv2.imshow("Fruits", img)
 
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+
+blue, green, red = cv2.split(img)
+
+grafico.hist(blue.ravel(), 256, (0, 256))
+grafico.figure()
+
+grafico.hist(green.ravel(), 256, (0, 256))
+grafico.figure()
+
+grafico.hist(red.ravel(), 256, (0, 256))
+grafico.show()
+
