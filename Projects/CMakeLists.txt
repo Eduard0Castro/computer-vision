@@ -3,8 +3,8 @@ project( Projects )
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-file(GLOB SOURCE_FILES "src/*.cpp"
-                        "src/*.hpp")
+file(GLOB SOURCE_FILES "src/C++/*.cpp"
+                        "src/C++/*.hpp")
 
 
  
