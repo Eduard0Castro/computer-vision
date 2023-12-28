@@ -2,8 +2,20 @@
 
 int main(){
 
+    cv::Mat clock = cv::imread("../Projects/Images/clock.bmp");
+    cv::Mat resized;
 
-    cv::String path = "../Projects/Images/fruits.jpg";
+    resized = clock(cv::Rect(0, 0, 500, 500));
+
+    cv::imwrite("../Projects/Images/clock_resized.bmp", resized);
+    
+    return 0;
+
+}
+
+int channels_segmentation(){
+
+    cv::String path = "../Projects/Images/clock.bmp";
     vector<cv::Mat> channels, channelsbgr;
     cv::Mat img = cv::imread(path), hue, saturation, value, vorta;
     cv::Vec3b valorPixel;
@@ -43,9 +55,6 @@ int main(){
     cout << pixelhue << endl;
 
     cv::waitKey(0);
-
-    return 0;
-
 }
 
 
