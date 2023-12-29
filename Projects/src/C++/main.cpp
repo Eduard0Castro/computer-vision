@@ -2,12 +2,27 @@
 
 int main(){
 
-    cv::Mat clock = cv::imread("../Projects/Images/clock.bmp");
-    cv::Mat resized;
+    cv::Mat img = cv::imread("../Projects/Images/folha.bmp");
+    cv::Mat rotated, translated;
 
-    resized = clock(cv::Rect(0, 0, 500, 500));
+    //Obtendo a matriz de rotação:
+    cv::Mat m_rotacao = cv::getRotationMatrix2D(cv::Point2f(img.size().width/2,
+                                                img.size().height/2), -90, 1);
 
-    cv::imwrite("../Projects/Images/clock_resized.bmp", resized);
+    //Obtendo a matriz de translação:
+    cv::Mat m_translacao = (cv::Mat_<float>(2,3) << 1, 0, 100, 0, 1, 100);
+
+    //Aplicando a matriz na imagem original e gerando a imagem rotacionada:
+    cv::warpAffine(img, rotated, m_rotacao, cv::Size(img.cols, img.cols));
+    cv::warpAffine(img, translated, m_translacao, cv::Size(img.cols, img.cols));
+
+    cv::resize(img, img, cv::Size(0,0), 0.5, 0.5, cv::INTER_CUBIC);
+    
+    cv::imshow("Original", img);
+    cv::imshow("Rotated", rotated);
+    cv::imshow("Translated", translated);
+
+    cv::waitKey(0);
     
     return 0;
 
@@ -21,6 +36,10 @@ int channels_segmentation(){
     cv::Vec3b valorPixel;
     int pixelhue, pixelblue;
     
+    if (img.empty()){
+        cerr << "Não possível carregar a imagem\n";
+        return -1;
+    }
     cv::resize(img, img, cv::Size(400, 300));
     cv::cvtColor(img, vorta, cv::COLOR_BGR2HSV);
 
@@ -55,6 +74,8 @@ int channels_segmentation(){
     cout << pixelhue << endl;
 
     cv::waitKey(0);
+
+    return 0;
 }
 
 
