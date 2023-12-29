@@ -30,7 +30,7 @@ class ImagesProcessing{
         cv::Mat swap();
         cv::Mat faceDetection();
         void cut();
-        cv::Mat warp();
+        cv::Mat warp(int, int, int, int, int, int, int, int, int, int);
         cv::Mat drawContours();
 };
 
@@ -158,9 +158,12 @@ void ImagesProcessing::cut(){
     }
 }
 
-cv::Mat ImagesProcessing::warp(){
+cv::Mat ImagesProcessing::warp(int x1 = 457, int y1 = 179, 
+                               int x2 = 745, int y2 = 57, 
+                               int x3 = 47, int y3 = 476, 
+                               int x4 = 664, int y4 = 284, 
+                               int width = 400, int height = 450){
     cv::Mat warped;
-    float width = 400, height = 450;
 
 
     cv::Point2f src[4] = {{457, 179}, {745, 57}, 
