@@ -163,18 +163,21 @@ cv::Mat ImagesProcessing::warp(float x1 = 457, float y1 = 179,
                                float x3 = 47, float y3 = 476, 
                                float x4 = 664, float y4 = 284, 
                                float width = 400, float height = 450){
-    cv::Mat warped;
+                               //dados para a imagem "building.jpg"
+    
+    cv::Mat warped, mat_perspective;
 
 
     cv::Point2f src[4] = {{x1, y1}, {x2, y2}, 
-                         {x3, y3}, {x4, y4}}; //dados para a imagem "building.jpg"
+                         {x3, y3}, {x4, y4}}; 
 
     cv::Point2f destiny[4] = {{0,0}, {width, 0}, 
                              {0, height}, {width, height}};
                              
+    //Matriz de ajuste de perspectiva:
+    mat_perspective = cv::getPerspectiveTransform(src, destiny);
 
-    cv::warpPerspective(copy, warped, cv::getPerspectiveTransform(src, destiny), 
-                        cv::Size(width, height));
+    cv::warpPerspective(copy, warped, mat_perspective, cv::Size(width, height));
 
     return warped;
 }

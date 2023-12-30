@@ -2,6 +2,36 @@
 
 int main(){
 
+    cv::Mat red_chips = cv::imread("../Projects/Images/ficha1.bmp");
+    cv::Mat black_chips = cv::imread("../Projects/Images/ficha2.bmp");
+    cv::Mat added;
+
+    cv::add(red_chips, black_chips, added);
+
+    cv::imshow("Adicionada", added);
+    cv::waitKey(0);
+
+
+    return 0;
+
+}
+
+void cut_chips(){
+    cv::Mat fichas_juntas = cv::imread("../Projects/Images/fichas_juntas.bmp");
+    cv::Mat fichas;
+    int x = 0, y = 0;
+    for (int i = 0; i < 3; i++){
+        fichas = fichas_juntas(cv::Rect(x, y, 500, 500));
+        cv::imwrite(cv::format("../Projects/Images/ficha%d.bmp", i+1), fichas);
+        x = x + 540;
+        cout << "Imagem " << i << endl;
+        cv::imshow("Fichas", fichas);
+        cv::waitKey(0);
+    }
+}
+
+void kafka_perspective(){
+
     cv::Mat franz = cv::imread("../Projects/Images/franz.jpg");
     cv::resize(franz, franz, cv::Size(365,650));
     ImagesProcessing perspective(franz);
@@ -10,8 +40,6 @@ int main(){
     
     cv::imshow("Book", kafka);
     cv::waitKey(0);
-    return 0;
-
 }
 
 void geometry_operations(){
