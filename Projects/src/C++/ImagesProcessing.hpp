@@ -30,7 +30,7 @@ class ImagesProcessing{
         cv::Mat swap();
         cv::Mat faceDetection();
         void cut();
-        cv::Mat warp(int, int, int, int, int, int, int, int, int, int);
+        cv::Mat warp(float, float, float, float, float, float, float, float, float, float);
         cv::Mat drawContours();
 };
 
@@ -158,16 +158,16 @@ void ImagesProcessing::cut(){
     }
 }
 
-cv::Mat ImagesProcessing::warp(int x1 = 457, int y1 = 179, 
-                               int x2 = 745, int y2 = 57, 
-                               int x3 = 47, int y3 = 476, 
-                               int x4 = 664, int y4 = 284, 
-                               int width = 400, int height = 450){
+cv::Mat ImagesProcessing::warp(float x1 = 457, float y1 = 179, 
+                               float x2 = 745, float y2 = 57, 
+                               float x3 = 47, float y3 = 476, 
+                               float x4 = 664, float y4 = 284, 
+                               float width = 400, float height = 450){
     cv::Mat warped;
 
 
-    cv::Point2f src[4] = {{457, 179}, {745, 57}, 
-                         {47, 476}, {664,284}}; //dados para a imagem "building.jpg"
+    cv::Point2f src[4] = {{x1, y1}, {x2, y2}, 
+                         {x3, y3}, {x4, y4}}; //dados para a imagem "building.jpg"
 
     cv::Point2f destiny[4] = {{0,0}, {width, 0}, 
                              {0, height}, {width, height}};

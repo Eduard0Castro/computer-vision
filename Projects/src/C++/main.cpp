@@ -2,7 +2,20 @@
 
 int main(){
 
-    cv::Mat img = cv::imread("../Projects/Images/folha.bmp");
+    cv::Mat franz = cv::imread("../Projects/Images/franz.jpg");
+    cv::resize(franz, franz, cv::Size(365,650));
+    ImagesProcessing perspective(franz);
+    cv::Mat kafka;
+    kafka = perspective.warp(46, 347, 167, 295, 226, 476, 346, 370, 200, 350);
+    
+    cv::imshow("Book", kafka);
+    cv::waitKey(0);
+    return 0;
+
+}
+
+void geometry_operations(){
+        cv::Mat img = cv::imread("../Projects/Images/folha.bmp");
     cv::Mat rotated, translated;
 
     //Obtendo a matriz de rotação:
@@ -23,9 +36,6 @@ int main(){
     cv::imshow("Translated", translated);
 
     cv::waitKey(0);
-    
-    return 0;
-
 }
 
 int channels_segmentation(){

@@ -16,16 +16,19 @@ grafico.figure()
 
 grafico.hist(equalizated.ravel(), 256, (0,255))
 grafico.show()
-# blue, green, red = cv2.split(img)
 
-# grafico.hist(blue.ravel(), 256, (0, 255))
-# grafico.figure()
-
-# grafico.hist(green.ravel(), 256, (0, 255))
-# grafico.figure()
-
-# grafico.hist(red.ravel(), 256, (0, 255))
-# grafico.show()
 cv2.waitKey(0)
 cv2.destroyAllWindows
 
+def channels_segmentation():
+
+    blue, green, red = cv2.split(img)
+
+    grafico.hist(blue.ravel(), 256, (0, 255))
+    grafico.figure()
+
+    grafico.hist(green.ravel(), 256, (0, 255))
+    grafico.figure()
+
+    grafico.hist(red.ravel(), 256, (0, 255))
+    grafico.show()
