@@ -4,7 +4,7 @@ import numpy as np
 
 img_path = Path().absolute().parent.parent
 
-kafka = cv2.imread("{}/Images/franz.jpg" .format(img_path))
+kafka = cv2.imread("{}/Images/Perspective/franz.jpg" .format(img_path))
 resized = cv2.resize(kafka, [365, 650])
 cv2.imshow("Franz", resized)
 print(img_path)

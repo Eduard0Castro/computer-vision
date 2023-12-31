@@ -2,19 +2,28 @@
 
 int main(){
 
-    cv::Mat red_chips = cv::imread("../Projects/Images/ficha1.bmp");
-    cv::Mat black_chips = cv::imread("../Projects/Images/ficha2.bmp");
-    cv::Mat added, subtracted, mixed;
+    cv::Mat red_chips = cv::imread("../Projects/Images/Fichas/ficha1.bmp");
+    cv::Mat black_chips = cv::imread("../Projects/Images/Fichas/ficha2.bmp");
+    cv::Mat one = cv::imread("../Projects/Images/Fichas/red1.bmp");
+    cv::Mat Two = cv::imread("../Projects/Images/Fichas/red2.bmp");
+    cv::Mat added, subtracted, mixed, three;
 
     cv::add(red_chips, black_chips, added);
-    cv::imshow("Adicionada 1", added);
+    //cv::imshow("Adicionada 1", added);
 
 
     cv::subtract(added, 70, subtracted);
-    cv::imshow("Subtraída", subtracted);
+    //cv::imshow("Subtraída", subtracted);
 
     cv::addWeighted(red_chips, 1, black_chips, 0.2, 0, mixed);
-    cv::imshow("Mixed", mixed);
+    //cv::imshow("Mixed", mixed);
+
+    cv::subtract(Two, one, three);
+    cv::imshow("Sub", three);
+    cv::cvtColor(three, three, cv::COLOR_BGR2GRAY);
+    cv::threshold(three, three, 30, 150, cv::THRESH_BINARY);
+
+    cv::imshow("Bin", three);
     cv::waitKey(0);
 
 
@@ -23,12 +32,12 @@ int main(){
 }
 
 void cut_chips(){
-    cv::Mat fichas_juntas = cv::imread("../Projects/Images/fichas_juntas.bmp");
+    cv::Mat fichas_juntas = cv::imread("../Projects/Images/Fichas/fichas_juntas.bmp");
     cv::Mat fichas;
     int x = 0, y = 0;
     for (int i = 0; i < 3; i++){
         fichas = fichas_juntas(cv::Rect(x, y, 500, 500));
-        cv::imwrite(cv::format("../Projects/Images/ficha%d.bmp", i+1), fichas);
+        cv::imwrite(cv::format("../Projects/Images/Fichas/ficha%d.bmp", i+1), fichas);
         x = x + 540;
         cout << "Imagem " << i << endl;
         cv::imshow("Fichas", fichas);
@@ -38,7 +47,7 @@ void cut_chips(){
 
 void kafka_perspective(){
 
-    cv::Mat franz = cv::imread("../Projects/Images/franz.jpg");
+    cv::Mat franz = cv::imread("../Projects/Images/Perspective/franz.jpg");
     cv::resize(franz, franz, cv::Size(365,650));
     ImagesProcessing perspective(franz);
     cv::Mat kafka;
@@ -49,7 +58,7 @@ void kafka_perspective(){
 }
 
 void geometry_operations(){
-        cv::Mat img = cv::imread("../Projects/Images/folha.bmp");
+        cv::Mat img = cv::imread("../Projects/Images/Processadas/folha.bmp");
     cv::Mat rotated, translated;
 
     //Obtendo a matriz de rotação:
@@ -74,7 +83,7 @@ void geometry_operations(){
 
 int channels_segmentation(){
 
-    cv::String path = "../Projects/Images/clock.bmp";
+    cv::String path = "../Projects/Images/Processadas/clock.bmp";
     vector<cv::Mat> channels, channelsbgr;
     cv::Mat img = cv::imread(path), hue, saturation, value, vorta;
     cv::Vec3b valorPixel;
@@ -124,8 +133,8 @@ int channels_segmentation(){
 
 
 int teste_class(){
-    cv::String path = "../Projects/Images/eneas.jpg";
-    cv::String build = "../Projects/Images/building.jpg";
+    cv::String path = "../Projects/Images/Eneas/eneas.jpg";
+    cv::String build = "../Projects/Images/Perspective/building.jpg";
     cv::Mat eneas = cv::imread(path), neg, resized, swapped, faces, warped, contours;
 
     if (eneas.empty()){
@@ -144,7 +153,7 @@ int teste_class(){
     teste.cut();
 
     //cv::bitwise_not(eneas, neg); função para negativar toda a imagem direto
-    cv::imwrite("../Projects/Images/eneas_resized.jpg", resized );
+    cv::imwrite("../Projects/Images/Eneas/eneas_resized.jpg", resized );
     
     cv::imshow("Nosso nome é Enéas negativo", neg);
     cv::imshow("Redimensionada: ", resized);

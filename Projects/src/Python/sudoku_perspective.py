@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 
 img_path = Path().absolute().parent.parent
-sudoku = cv2.imread("{}/Images/sudoku.bmp" .format(img_path))
+sudoku = cv2.imread("{}/Images/Perspective/sudoku.bmp" .format(img_path))
 
 src = np.float32([[189, 87], [459,84], [192, 373], [484,372]])
 dst = np.float32([[0,0], [500,0], [0,500], [500,500]])

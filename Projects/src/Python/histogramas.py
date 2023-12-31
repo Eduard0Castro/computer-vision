@@ -3,7 +3,7 @@ import pathlib
 from matplotlib import pyplot as grafico
 
 img_path = pathlib.Path().absolute().parent.parent
-img = cv2.imread(f"{img_path}/Images/clock.bmp")
+img = cv2.imread(f"{img_path}/Images/Processadas/clock.bmp")
 
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 equalizated = cv2.equalizeHist(img)

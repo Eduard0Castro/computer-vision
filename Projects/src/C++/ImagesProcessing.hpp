@@ -154,7 +154,7 @@ void ImagesProcessing::cut(){
         cortes = copy(cv::Rect(0, rows*i/n_cortes, 
                       copy.size().width, copy.size().height/n_cortes));
 
-        cv::imwrite(cv::format("../Projects/Images/eneas%d.jpg", i+1), cortes);
+        cv::imwrite(cv::format("../Projects/Images/Eneas/eneas%d.jpg", i+1), cortes);
     }
 }
 
