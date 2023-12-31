@@ -4,11 +4,17 @@ int main(){
 
     cv::Mat red_chips = cv::imread("../Projects/Images/ficha1.bmp");
     cv::Mat black_chips = cv::imread("../Projects/Images/ficha2.bmp");
-    cv::Mat added;
+    cv::Mat added, subtracted, mixed;
 
     cv::add(red_chips, black_chips, added);
+    cv::imshow("Adicionada 1", added);
 
-    cv::imshow("Adicionada", added);
+
+    cv::subtract(added, 70, subtracted);
+    cv::imshow("Subtraída", subtracted);
+
+    cv::addWeighted(red_chips, 1, black_chips, 0.2, 0, mixed);
+    cv::imshow("Mixed", mixed);
     cv::waitKey(0);
 
 
