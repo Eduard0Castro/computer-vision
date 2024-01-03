@@ -2,6 +2,53 @@
 
 int main(){
 
+    cv::Mat img = cv::imread("../Projects/Images/Filtros/fifty_cut.bmp");
+    cv::Mat radio = cv::imread("../Projects/Images/Filtros/radiotividade.bmp");
+    cv::Mat woman = cv::imread("../Projects/Images/Filtros/woman.bmp");
+    cv::Mat SaltPepper = cv::imread("../Projects/Images/Filtros/SaltPepper.bmp");
+    cv::Mat parking = cv::imread("../Projects/Images/Filtros/parking1.bmp");
+    cv::Mat average, gaussian, median_blur, bileteral;
+
+
+    cv::imshow("Fifty", img);
+
+    cv::blur(img, average, cv::Size(5,5));
+    cv::imshow("Average", average);
+
+    cv::GaussianBlur(img, gaussian,  cv::Size(5,5), 0); //sigma é o grau de suavização desejado
+    cv::imshow("Gaussian", gaussian);
+
+    //é recomendado que a mascara seja uma matriz quadrada 
+    //com numero impar de linhas e colunas
+    cv::imshow("Original", radio);
+
+    cv::GaussianBlur(radio, gaussian, cv::Size(21,21), 4);
+    cv::imshow("Gaussian 1", gaussian);
+
+    cv::GaussianBlur(radio, gaussian, cv::Size(41, 41), 8);
+    cv::imshow("Gaussian 2", gaussian);
+
+
+    cv::imshow("Woman Original", woman);
+    cv::GaussianBlur(woman, gaussian, cv::Size(3,3), 5);
+    cv::imshow("Gaussian Woman", gaussian);
+
+    cv::imshow("SaltPepper Original", SaltPepper);
+    cv::medianBlur(SaltPepper, median_blur, 5);
+    cv::imshow("Filtro de Mediana", median_blur);
+
+    cv::imshow("Parking original", parking);
+    cv::bilateralFilter(parking, bileteral, 10, 75, 75);
+    cv::imshow("Bilateral Filter", bileteral);
+
+    cv::waitKey(0);
+
+    return 0;
+
+}
+
+void add_sub_mix(){
+
     cv::Mat red_chips = cv::imread("../Projects/Images/Fichas/ficha1.bmp");
     cv::Mat black_chips = cv::imread("../Projects/Images/Fichas/ficha2.bmp");
     cv::Mat one = cv::imread("../Projects/Images/Fichas/red1.bmp");
@@ -25,9 +72,6 @@ int main(){
 
     cv::imshow("Bin", three);
     cv::waitKey(0);
-
-
-    return 0;
 
 }
 

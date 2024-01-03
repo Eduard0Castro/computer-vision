@@ -15,7 +15,11 @@ perspective = cv2.warpPerspective(sudoku, matriz, (500,500))
 
 cv2.imshow("Original ", sudoku)
 cv2.imshow("Perspective", perspective)
-cv2.waitKey(0)
+
+key = cv2.waitKey(0)
+
+if key == "q":
+    cv2.destroyAllWindows
 
 
 

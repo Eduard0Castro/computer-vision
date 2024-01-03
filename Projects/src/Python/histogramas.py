@@ -17,8 +17,10 @@ grafico.figure()
 grafico.hist(equalizated.ravel(), 256, (0,255))
 grafico.show()
 
-cv2.waitKey(0)
-cv2.destroyAllWindows
+key = cv2.waitKey(0)
+
+if key == "q":
+    cv2.destroyAllWindows
 
 def channels_segmentation():
 
