@@ -30,7 +30,7 @@ class ImagesProcessing{
         cv::Mat swap();
         cv::Mat faceDetection();
         void cut();
-        cv::Mat warp();
+        cv::Mat warp(float, float, float, float, float, float, float, float, float, float);
         cv::Mat drawContours();
 };
 
@@ -154,24 +154,30 @@ void ImagesProcessing::cut(){
         cortes = copy(cv::Rect(0, rows*i/n_cortes, 
                       copy.size().width, copy.size().height/n_cortes));
 
-        cv::imwrite(cv::format("../Projects/Images/eneas%d.jpg", i+1), cortes);
+        cv::imwrite(cv::format("../Projects/Images/Eneas/eneas%d.jpg", i+1), cortes);
     }
 }
 
-cv::Mat ImagesProcessing::warp(){
-    cv::Mat warped;
-    float width = 400, height = 450;
+cv::Mat ImagesProcessing::warp(float x1 = 457, float y1 = 179, 
+                               float x2 = 745, float y2 = 57, 
+                               float x3 = 47, float y3 = 476, 
+                               float x4 = 664, float y4 = 284, 
+                               float width = 400, float height = 450){
+                               //dados para a imagem "building.jpg"
+    
+    cv::Mat warped, mat_perspective;
 
 
-    cv::Point2f src[4] = {{457, 179}, {745, 57}, 
-                         {47, 476}, {664,284}}; //dados para a imagem "building.jpg"
+    cv::Point2f src[4] = {{x1, y1}, {x2, y2}, 
+                         {x3, y3}, {x4, y4}}; 
 
     cv::Point2f destiny[4] = {{0,0}, {width, 0}, 
                              {0, height}, {width, height}};
                              
+    //Matriz de ajuste de perspectiva:
+    mat_perspective = cv::getPerspectiveTransform(src, destiny);
 
-    cv::warpPerspective(copy, warped, cv::getPerspectiveTransform(src, destiny), 
-                        cv::Size(width, height));
+    cv::warpPerspective(copy, warped, mat_perspective, cv::Size(width, height));
 
     return warped;
 }
