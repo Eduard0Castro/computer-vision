@@ -1,19 +1,21 @@
 import cv2
-from pathlib import Path 
+from pathlib import Path
 
 path = Path().absolute().parent.parent
-img = cv2.imread(f"{path}/Images/Filtros/parking.bmp")
-cv2.imshow("Parking", img)
 
-cut = img[0:332, 0:500]
+img = cv2.imread(f"{path}/Images/Filtros/bones.bmp")
 
-cv2.imwrite(f"{path}/Images/Filtros/parking1.bmp", cut)
+cv2.imshow("Ossos", img)
+
+cut = img[0:400, 0:400]
+
+cv2.imwrite("{}/Images/Filtros/bone1.bmp" .format(path), cut)
 
 
 key = cv2.waitKey(0)
+
 if key == 'q':
     cv2.destroyAllWindows()
-
 
 
 def cortando_mulher():

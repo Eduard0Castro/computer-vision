@@ -2,26 +2,108 @@
 
 int main(){
 
+    cv::Mat bone = cv::imread("../Projects/Images/Filtros/bone.bmp");
+    cv::Mat gaussian, detalhada, Final;
+
+    //O procedimento é usar um filtro passa-baixa para gerar um imagem suavizada
+    //para depois subtraí-la da imagem original afim de gerar uma imagem só com
+    //as altas frequência para então somar esta com a original para aguçar as in-
+    //formações de alta frequência
+    cv::GaussianBlur(bone, gaussian, cv::Size(13,13), 3);
+    cv::subtract(bone, gaussian, detalhada);
+    detalhada = 3*detalhada;
+    cv::add(bone, detalhada, Final);
+
+    cv::imshow("Bone", bone);
+    cv::imshow("Gaussiana", gaussian);
+    cv::imshow("Bordas", detalhada);
+    cv::imshow("Final", Final);
+
+    cv::waitKey(0);
+
+    return 0;
+
+}
+
+void agucar_bordas(){
+
+    //Aqui é feita a subtração da imagem com a imagem gerada pela
+    //função laplacian. A função 'subtract' consegue realizar essa operação
+    //tratando automaticamente os pixels que ficam com valores negativos.
+    //Essa operação é realizada para aguçar as bordas de uma imagem
+
+    cv::Mat moon = cv::imread("../Projects/Images/Filtros/moon.bmp");
+    cv::Mat laplacian, subtracted;
+
+    cv::Laplacian(moon, laplacian, CV_8U);
+    cv::subtract(moon, laplacian, subtracted);
+
+    cv::imshow("Moon original", moon);
+    cv::imshow("Laplacian Moon", laplacian);
+    cv::imshow("Subtracted", subtracted);
+
+    cv::waitKey(0);
+
+}
+
+void operators(){
+
+    //Os operadores de Sobel e Laplaciano são usados para realçar bordas e contornos,
+    //sendo que o Laplaciano consegue um desempenho superior ao de Sobel, mas ainda é muito
+    //sensível a ruídos. Para melhorar essa questão, utiliza-se um filtro gaussiano 
+    //antes de aplicar o operador
+
+    cv::Mat parking = cv::imread("../Projects/Images/Filtros/parking1.bmp");
+    cv::Mat bilateral, SobelX, SobelY, laplacian, laplacian_r;
+
+
+    //O filtro bileteral é um filtro não linear, mas que comporta-se como um gaussiano,
+    //suavizando a imagem, mas preservando os contornos
+    cv::bilateralFilter(parking, bilateral, 10, 75, 75);
+    cv::Sobel(parking, SobelX, CV_8U, 1, 0, 3);
+    cv::Sobel(parking, SobelY, CV_8U, 0, 1, 3);
+
+    cv::Laplacian(parking, laplacian_r, CV_8U);
+    cv::Laplacian(bilateral, laplacian, CV_8U);
+
+    cv::imshow("Parking original", parking);
+    cv::imshow("Parking bilateral", bilateral);
+    cv::imshow("Sobel X", SobelX);
+    cv::imshow("Sobel Y", SobelY);
+    cv::imshow("Laplacian com ruido", laplacian_r);
+    cv::imshow("Laplacian", laplacian);
+
+    cv::waitKey(0);
+}
+
+void filters(){
+
     cv::Mat img = cv::imread("../Projects/Images/Filtros/fifty_cut.bmp");
     cv::Mat radio = cv::imread("../Projects/Images/Filtros/radiotividade.bmp");
     cv::Mat woman = cv::imread("../Projects/Images/Filtros/woman.bmp");
     cv::Mat SaltPepper = cv::imread("../Projects/Images/Filtros/SaltPepper.bmp");
     cv::Mat parking = cv::imread("../Projects/Images/Filtros/parking1.bmp");
-    cv::Mat average, gaussian, median_blur, bileteral;
+    cv::Mat average, gaussian, median_blur, bilateral;
 
 
     cv::imshow("Fifty", img);
 
+    //Filtro de média: passa-baixa; para suavizar a imagem
     cv::blur(img, average, cv::Size(5,5));
     cv::imshow("Average", average);
 
-    cv::GaussianBlur(img, gaussian,  cv::Size(5,5), 0); //sigma é o grau de suavização desejado
+
+    //Filtro gaussiano: passa-baixa, suavizar, mas com um parâmetro a mais, o sigma
+    cv::GaussianBlur(img, gaussian,  cv::Size(5,5), 0);//sigma é o grau de suavização desejado
     cv::imshow("Gaussian", gaussian);
 
-    //é recomendado que a mascara seja uma matriz quadrada 
-    //com numero impar de linhas e colunas
     cv::imshow("Original", radio);
+    
 
+    //Testando filtro gaussiano com diferentes valores de tamanho e sigma:
+
+    //É recomendado que a mascara seja uma matriz quadrada 
+    //com numero impar de linhas e colunas
     cv::GaussianBlur(radio, gaussian, cv::Size(21,21), 4);
     cv::imshow("Gaussian 1", gaussian);
 
@@ -33,18 +115,23 @@ int main(){
     cv::GaussianBlur(woman, gaussian, cv::Size(3,3), 5);
     cv::imshow("Gaussian Woman", gaussian);
 
+
+    //Filtro de Mediana: passa-alta, não linear, útil no tratamento de ruídos do 
+    //tipo sal e pimenta e preserva bordas e contornos
+    //Quando executado com valor de intensidade (último parâmetro de 'medianBlur')
+    //muito alto, pode deformar os contornos
     cv::imshow("SaltPepper Original", SaltPepper);
     cv::medianBlur(SaltPepper, median_blur, 5);
     cv::imshow("Filtro de Mediana", median_blur);
 
+
+    //Filtro bilateral: passa-alta, não linear, comporta-se como um gaussiano,
+    //mas preservando as bordas e os contornos. É o mais utilizado para tanto
     cv::imshow("Parking original", parking);
-    cv::bilateralFilter(parking, bileteral, 10, 75, 75);
-    cv::imshow("Bilateral Filter", bileteral);
+    cv::bilateralFilter(parking, bilateral, 10, 75, 75);
+    cv::imshow("Bilateral Filter", bilateral);
 
     cv::waitKey(0);
-
-    return 0;
-
 }
 
 void add_sub_mix(){
@@ -102,7 +189,8 @@ void kafka_perspective(){
 }
 
 void geometry_operations(){
-        cv::Mat img = cv::imread("../Projects/Images/Processadas/folha.bmp");
+    
+    cv::Mat img = cv::imread("../Projects/Images/Processadas/folha.bmp");
     cv::Mat rotated, translated;
 
     //Obtendo a matriz de rotação:
@@ -118,7 +206,7 @@ void geometry_operations(){
 
     cv::resize(img, img, cv::Size(0,0), 0.5, 0.5, cv::INTER_CUBIC);
     
-    cv::imshow("Original", img);
+    cv::imshow("Original resized", img);
     cv::imshow("Rotated", rotated);
     cv::imshow("Translated", translated);
 
