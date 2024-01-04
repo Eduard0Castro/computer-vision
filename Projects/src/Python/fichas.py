@@ -11,7 +11,6 @@ cv2.imwrite(f"{img_path}/Images/Fichas/fichas_add.bmp", added)
 
 
 
-
 def cut_chips():
 
     fichas = cv2.imread("{}/Images/Fichas/fichas_juntas.bmp" .format(img_path))

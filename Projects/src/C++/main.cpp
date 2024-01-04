@@ -27,7 +27,7 @@ int main(){
 
 void agucar_bordas(){
 
-    //Aqui é feita a subtração da imagem com a imagem gerada pela
+    //Aqui é feita a subtração da imagem original com a imagem gerada pela
     //função laplacian. A função 'subtract' consegue realizar essa operação
     //tratando automaticamente os pixels que ficam com valores negativos.
     //Essa operação é realizada para aguçar as bordas de uma imagem
@@ -127,6 +127,8 @@ void filters(){
 
     //Filtro bilateral: passa-alta, não linear, comporta-se como um gaussiano,
     //mas preservando as bordas e os contornos. É o mais utilizado para tanto
+    //Parâmetros inteiros: 10 é o tamanho do filtro (não recomendado ser maior
+    //que 5 em imagens captadas em tempo real) 
     cv::imshow("Parking original", parking);
     cv::bilateralFilter(parking, bilateral, 10, 75, 75);
     cv::imshow("Bilateral Filter", bilateral);
