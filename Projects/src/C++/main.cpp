@@ -2,6 +2,25 @@
 
 int main(){
 
+    cv::Mat rolamento = cv::imread("../Projects/Images/Morfologia/rolamento.bmp");
+    cv::Mat eroded, dilated;
+
+    cv::erode(rolamento, eroded, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)), 
+              cv::Point(-1, -1), 2);
+    cv::dilate(rolamento, dilated, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)), 
+              cv::Point(-1, -1), 2); 
+
+    cv::imshow("Original", rolamento);
+    cv::imshow("Eroded", eroded);
+    cv::imshow("Dilated", dilated);
+    cv::waitKey(0);
+
+    return 0;
+
+}
+
+void bone(){
+
     cv::Mat bone = cv::imread("../Projects/Images/Filtros/bone.bmp");
     cv::Mat gaussian, detalhada, Final;
 
@@ -20,9 +39,6 @@ int main(){
     cv::imshow("Final", Final);
 
     cv::waitKey(0);
-
-    return 0;
-
 }
 
 void agucar_bordas(){
