@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from pathlib import Path
 
-img_path = Path().absolute().parent.parent
+img_path = Path().absolute().parent.parent.parent
 sudoku = cv2.imread("{}/Images/Perspective/sudoku.bmp" .format(img_path))
 
 src = np.float32([[189, 87], [459,84], [192, 373], [484,372]])
@@ -16,10 +16,8 @@ perspective = cv2.warpPerspective(sudoku, matriz, (500,500))
 cv2.imshow("Original ", sudoku)
 cv2.imshow("Perspective", perspective)
 
-key = cv2.waitKey(0)
-
-if key == "q":
-    cv2.destroyAllWindows
+key = cv2.waitKey()
+cv2.destroyAllWindows()
 
 
 

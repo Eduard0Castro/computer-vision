@@ -1,7 +1,7 @@
 import cv2
 from pathlib import Path
 
-path = Path().absolute().parent.parent
+path = Path().absolute().parent.parent.parent
 
 bone = cv2.imread("{}/Images/Filtros/bone.bmp" .format(path))
 
@@ -15,7 +15,5 @@ cv2.imshow("Bordas", bordas)
 cv2.imshow("Final", final)
 
 key = cv2.waitKey()
-#33411781
-if key == 'q':
-    cv2.destroyAllWindows()
+cv2.destroyAllWindows()
 

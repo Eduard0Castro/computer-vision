@@ -2,7 +2,7 @@ import cv2
 import pathlib
 from matplotlib import pyplot as grafico
 
-img_path = pathlib.Path().absolute().parent.parent
+img_path = pathlib.Path().absolute().parent.parent.parent
 img = cv2.imread(f"{img_path}/Images/Processadas/clock.bmp")
 
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -17,10 +17,8 @@ grafico.figure()
 grafico.hist(equalizated.ravel(), 256, (0,255))
 grafico.show()
 
-key = cv2.waitKey(0)
-
-if key == "q":
-    cv2.destroyAllWindows
+key = cv2.waitKey()
+cv2.destroyAllWindows()
 
 def channels_segmentation():
 
