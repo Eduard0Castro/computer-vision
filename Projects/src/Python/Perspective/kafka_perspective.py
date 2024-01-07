@@ -2,7 +2,7 @@ import cv2
 from pathlib import Path
 import numpy as np
 
-img_path = Path().absolute().parent.parent
+img_path = Path().absolute().parent.parent.parent
 
 kafka = cv2.imread("{}/Images/Perspective/franz.jpg" .format(img_path))
 resized = cv2.resize(kafka, [365, 650])
@@ -17,8 +17,5 @@ matriz_trans = cv2.getPerspectiveTransform(src, dst)
 modificada = cv2.warpPerspective(resized, matriz_trans, (200,350))
 cv2.imshow("Modificada", modificada)
 
-key = cv2.waitKey(0)
-
-if key == "q":
-    cv2.destroyAllWindows
-
+key = cv2.waitKey()
+cv2.destroyAllWindows()

@@ -3,20 +3,17 @@ from pathlib import Path
 
 path = Path().absolute().parent.parent
 
-img = cv2.imread(f"{path}/Images/Filtros/bones.bmp")
-
-cv2.imshow("Ossos", img)
-
-cut = img[0:400, 0:400]
-
-cv2.imwrite("{}/Images/Filtros/bone1.bmp" .format(path), cut)
+rolamento = cv2.imread(f"{path}/Images/Morfologia/ruido_interno.bmp")
 
 
-key = cv2.waitKey(0)
+cut = rolamento[0:500,0:500]
+cv2.imshow("Rolamento", rolamento)
 
-if key == 'q':
-    cv2.destroyAllWindows()
+cv2.imwrite(f"{path}/Images/Morfologia/rolamento_ruido_interno.bmp", cut)
 
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+    
 
 def cortando_mulher():
 

@@ -2,13 +2,86 @@
 
 int main(){
 
+    /*
+    - Elemento estruturante é a matriz que é formada sendo seu pixel central 
+      sobreposto em todos os pixels para determinar se ele vai ou não para a imagem
+      final dependendo da operação realizada.
+    
+      Erosão: todos os pixels da vizinhança do pixel-alvo devem coincidir 
+              com o os do elemento estruturante para que aquele esteja na imagem
+              final.
+      Dilatação: ao menos um pixel da vinhança do pixel-alvo ou ele mesmo deve coindir
+                 com um pixel do elemento estruturante para estar na imagem final
+                */
+
+    cv::Mat rolamento = cv::imread("../Projects/Images/Morfologia/rolamento.bmp");
+    cv::Mat rolamento_ruido = cv::imread("../Projects/Images/Morfologia/rolamento_ruido.bmp");
+    cv::Mat ruido_interno = cv::imread("../Projects/Images/Morfologia/ruido_interno.bmp");
+    cv::Mat eroded, dilated, abertura, fechamento;
+
+    cv::erode(rolamento, eroded, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)), 
+              cv::Point(-1, -1), 2);
+    cv::dilate(rolamento, dilated, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)), 
+              cv::Point(-1, -1), 2); 
+
+    /*
+      Abertura: erosão -> dilatação: tratar ruídos
+      Fechamento: dilatação -> erosão: corrigir danor da binarização
+    */
+    cv::morphologyEx(rolamento_ruido, abertura, cv::MORPH_OPEN, 
+                     cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3,3)));
+    cv::morphologyEx(ruido_interno, fechamento, cv::MORPH_CLOSE, 
+                     cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)));
+
+
+
+    cv::imshow("Original", rolamento);
+    cv::imshow("Eroded", eroded);
+    cv::imshow("Dilated", dilated);
+    cv::imshow("Rolamento Ruido", rolamento_ruido);
+    cv::imshow("Rolamento abertura", abertura);
+    cv::imshow("Ruido interno", ruido_interno);
+    cv::imshow("Fechamento", fechamento);
+
+    cv::waitKey(0);
+
+    return 0;
+
+}
+
+void binary_plate(){
+    
+    /*Para binarizar um imagem com OpenCV, utilizar-se-á o método "threshold"
+    que necessita de uma imagem em escala de cinza e seus parâmetros envolvem
+    a imagem base, o destino, o threshold (limiar que separa o será preto e o que 
+    será branco dependendo do tipo de thresholding do último parâmetro), valor máximo 
+    de representação (branco - 255), THRESH_BINARY: os pixels abaixo do valor apontado 
+    serão representados em preto (0) e os acima ou iguais, seguindo o maxValue. 
+    O INV é o inverso*/
+    cv::Mat plate = cv::imread("../Projects/Images/Morfologia/plate.bmp");
+    cv::Mat gray_plate, binary_plate;
+
+    cv::cvtColor(plate, gray_plate, cv::COLOR_BGR2GRAY);
+    cv::threshold(gray_plate, binary_plate, 60, 255, cv::THRESH_BINARY_INV);
+
+    cv::imshow("Gray Plate", gray_plate);
+    cv::imshow("Binary plate", binary_plate);
+
+    cv::waitKey(0);
+
+
+}
+
+void bone(){
+
     cv::Mat bone = cv::imread("../Projects/Images/Filtros/bone.bmp");
     cv::Mat gaussian, detalhada, Final;
 
-    //O procedimento é usar um filtro passa-baixa para gerar um imagem suavizada
-    //para depois subtraí-la da imagem original afim de gerar uma imagem só com
-    //as altas frequência para então somar esta com a original para aguçar as in-
-    //formações de alta frequência
+    /*O procedimento é usar um filtro passa-baixa para gerar um imagem suavizada
+    para depois subtraí-la da imagem original afim de gerar uma imagem só com
+    as altas frequência para então somar esta com a original para aguçar as in-
+    formações de alta frequência*/
+
     cv::GaussianBlur(bone, gaussian, cv::Size(13,13), 3);
     cv::subtract(bone, gaussian, detalhada);
     detalhada = 3*detalhada;
@@ -20,17 +93,14 @@ int main(){
     cv::imshow("Final", Final);
 
     cv::waitKey(0);
-
-    return 0;
-
 }
 
 void agucar_bordas(){
 
-    //Aqui é feita a subtração da imagem com a imagem gerada pela
-    //função laplacian. A função 'subtract' consegue realizar essa operação
-    //tratando automaticamente os pixels que ficam com valores negativos.
-    //Essa operação é realizada para aguçar as bordas de uma imagem
+    /*Aqui é feita a subtração da imagem original com a imagem gerada pela
+    função laplacian. A função 'subtract' consegue realizar essa operação
+    tratando automaticamente os pixels que ficam com valores negativos.
+    Essa operação é realizada para aguçar as bordas de uma imagem*/
 
     cv::Mat moon = cv::imread("../Projects/Images/Filtros/moon.bmp");
     cv::Mat laplacian, subtracted;
@@ -48,17 +118,17 @@ void agucar_bordas(){
 
 void operators(){
 
-    //Os operadores de Sobel e Laplaciano são usados para realçar bordas e contornos,
-    //sendo que o Laplaciano consegue um desempenho superior ao de Sobel, mas ainda é muito
-    //sensível a ruídos. Para melhorar essa questão, utiliza-se um filtro gaussiano 
-    //antes de aplicar o operador
+    /*Os operadores de Sobel e Laplaciano são usados para realçar bordas e contornos,
+    sendo que o Laplaciano consegue um desempenho superior ao de Sobel, mas ainda é muito
+    sensível a ruídos. Para melhorar essa questão, utiliza-se um filtro gaussiano 
+    antes de aplicar o operador*/
 
     cv::Mat parking = cv::imread("../Projects/Images/Filtros/parking1.bmp");
     cv::Mat bilateral, SobelX, SobelY, laplacian, laplacian_r;
 
 
-    //O filtro bileteral é um filtro não linear, mas que comporta-se como um gaussiano,
-    //suavizando a imagem, mas preservando os contornos
+    /*O filtro bileteral é um filtro não linear, mas que comporta-se como um gaussiano,
+    suavizando a imagem, mas preservando os contornos*/
     cv::bilateralFilter(parking, bilateral, 10, 75, 75);
     cv::Sobel(parking, SobelX, CV_8U, 1, 0, 3);
     cv::Sobel(parking, SobelY, CV_8U, 0, 1, 3);
@@ -116,17 +186,19 @@ void filters(){
     cv::imshow("Gaussian Woman", gaussian);
 
 
-    //Filtro de Mediana: passa-alta, não linear, útil no tratamento de ruídos do 
-    //tipo sal e pimenta e preserva bordas e contornos
-    //Quando executado com valor de intensidade (último parâmetro de 'medianBlur')
-    //muito alto, pode deformar os contornos
+    /*Filtro de Mediana: passa-alta, não linear, útil no tratamento de ruídos do 
+    tipo sal e pimenta e preserva bordas e contornos
+    Quando executado com valor de intensidade (último parâmetro de 'medianBlur')
+    muito alto, pode deformar os contornos*/
     cv::imshow("SaltPepper Original", SaltPepper);
     cv::medianBlur(SaltPepper, median_blur, 5);
     cv::imshow("Filtro de Mediana", median_blur);
 
 
-    //Filtro bilateral: passa-alta, não linear, comporta-se como um gaussiano,
-    //mas preservando as bordas e os contornos. É o mais utilizado para tanto
+    /*Filtro bilateral: passa-alta, não linear, comporta-se como um gaussiano,
+    mas preservando as bordas e os contornos. É o mais utilizado para tanto
+    Parâmetros inteiros: 10 é o tamanho do filtro (não recomendado ser maior
+    que 5 em imagens captadas em tempo real)*/ 
     cv::imshow("Parking original", parking);
     cv::bilateralFilter(parking, bilateral, 10, 75, 75);
     cv::imshow("Bilateral Filter", bilateral);
