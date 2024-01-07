@@ -11,7 +11,7 @@ cv2.imshow("Moon", moon)
 cv2.imshow("Laplacian moon", laplacian_moon)
 cv2.imshow("Final", final)
 
-key = cv2.waitKey()
+cv2.waitKey()
 cv2.destroyAllWindows()
 
 

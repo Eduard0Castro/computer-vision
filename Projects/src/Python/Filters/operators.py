@@ -24,5 +24,5 @@ cv2.imshow("SobelY", sobelY)
 cv2.imshow("Laplacian bilateral", laplacian)
 cv2.imshow("Laplaciano de Gaussiano", laplacian_gaussian)
 
-key = cv2.waitKey()
+cv2.waitKey()
 cv2.destroyAllWindows()

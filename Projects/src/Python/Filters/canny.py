@@ -19,5 +19,5 @@ cv2.imshow("Canny Gaussian", canny_gaussian)
 cv2.imshow("Canny bilateral", canny_bilateral)
 
 
-key = cv2.waitKey()
+cv2.waitKey()
 cv2.destroyAllWindows()

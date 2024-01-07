@@ -12,5 +12,5 @@ cv2.imshow("Original", rolamento)
 cv2.imshow("Eroded", eroded)
 cv2.imshow("Dilated", dilated)
 
-key = cv2.waitKey()
+cv2.waitKey()
 cv2.destroyAllWindows()

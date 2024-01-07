@@ -17,5 +17,5 @@ matriz_trans = cv2.getPerspectiveTransform(src, dst)
 modificada = cv2.warpPerspective(resized, matriz_trans, (200,350))
 cv2.imshow("Modificada", modificada)
 
-key = cv2.waitKey()
+cv2.waitKey()
 cv2.destroyAllWindows()
