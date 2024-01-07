@@ -2,22 +2,69 @@
 
 int main(){
 
-    /*
-    - Elemento estruturante é a matriz que é formada sendo seu pixel central 
-      sobreposto em todos os pixels para determinar se ele vai ou não para a imagem
-      final dependendo da operação realizada.
+    cv::Mat andromeda = cv::imread("../Projects/Images/Morfologia/andromeda.bmp");
+    cv::Mat elementoEstruturante, top_hat;
+
+    //Top Hat aplicada a elementos estruturantes menores pode suprimir grande regiões
+    elementoEstruturante = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5));
+    cv::morphologyEx(andromeda, top_hat, cv::MORPH_TOPHAT, elementoEstruturante);
+
+    cv::imshow("Andromeda", andromeda);
+    cv::imshow("Sem andromeda", top_hat);
+
+    cv::waitKey(0);
+
+    return 0;
+
+}
+
+void rice(){
+
+    /*As operações de abertura e fechamento em imagens em tons de cinza são
+    utilizadas para uniformizar a iluminação na imagem. 
+    Abertura: tende a suprimir pequenas regiões brilhantes
+    Fechamento: tende a suprimir pequenas regiões escuras */
+    cv::Mat arroz = cv::imread("../Projects/Images/Morfologia/arroz.bmp");
+    cv::Mat open, subt, added, top_hat, added_th;
+
+
+    cv::morphologyEx(arroz, open, cv::MORPH_OPEN, 
+                     cv::getStructuringElement(cv::MORPH_CROSS, cv::Size(100,100)));
+    cv::subtract(arroz, open, subt);
+    cv::add(subt, subt, added);
+
+    /*A operação Top Hat executa a abertura e a subtração de uma vez: */
+    cv::morphologyEx(arroz, top_hat, cv::MORPH_TOPHAT,
+                     cv::getStructuringElement(cv::MORPH_CROSS, cv::Size(100,100)));
+    cv::add(top_hat, top_hat, added_th);
+
+    cv::imshow("Arroz", arroz);
+    cv::imshow("Abertura", open);
+    cv::imshow("Subtraída", subt);
+    cv::imshow("Adicionada", added);
+    cv::imshow("Top Hat", top_hat);
+    cv::imshow("Adicionada Top Hat", added_th);
+
+    cv::waitKey(0);
+
+}
+
+void bearing_morphology(){
+
+    /*Elemento estruturante é a matriz que é formada sendo seu pixel central 
+    sobreposto em todos os pixels para determinar se ele vai ou não para a imagem
+    final dependendo da operação realizada.
     
-      Erosão: todos os pixels da vizinhança do pixel-alvo devem coincidir 
-              com o os do elemento estruturante para que aquele esteja na imagem
-              final.
-      Dilatação: ao menos um pixel da vinhança do pixel-alvo ou ele mesmo deve coindir
-                 com um pixel do elemento estruturante para estar na imagem final
-                */
+    Erosão: todos os pixels da vizinhança do pixel-alvo devem coincidir 
+            com o os do elemento estruturante para que aquele esteja na imagem
+            final.
+    Dilatação: ao menos um pixel da vinhança do pixel-alvo ou ele mesmo deve coindir
+               com um pixel do elemento estruturante para estar na imagem final*/
 
     cv::Mat rolamento = cv::imread("../Projects/Images/Morfologia/rolamento.bmp");
     cv::Mat rolamento_ruido = cv::imread("../Projects/Images/Morfologia/rolamento_ruido.bmp");
     cv::Mat ruido_interno = cv::imread("../Projects/Images/Morfologia/ruido_interno.bmp");
-    cv::Mat eroded, dilated, abertura, fechamento;
+    cv::Mat eroded, dilated, abertura, fechamento, gradient;
 
     cv::erode(rolamento, eroded, cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)), 
               cv::Point(-1, -1), 2);
@@ -26,12 +73,18 @@ int main(){
 
     /*
       Abertura: erosão -> dilatação: tratar ruídos
-      Fechamento: dilatação -> erosão: corrigir danor da binarização
+
+      Fechamento: dilatação -> erosão: corrigir danos da binarização
+
+      Gradiente: diferença entre erosão e dilatação; representa os
+      contornos do objeto de interesse
     */
     cv::morphologyEx(rolamento_ruido, abertura, cv::MORPH_OPEN, 
                      cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3,3)));
     cv::morphologyEx(ruido_interno, fechamento, cv::MORPH_CLOSE, 
                      cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5,5)));
+    cv::morphologyEx(rolamento, gradient, cv::MORPH_GRADIENT,
+                     cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3,3)));
 
 
 
@@ -42,10 +95,9 @@ int main(){
     cv::imshow("Rolamento abertura", abertura);
     cv::imshow("Ruido interno", ruido_interno);
     cv::imshow("Fechamento", fechamento);
+    cv::imshow("Gradient", gradient);
 
     cv::waitKey(0);
-
-    return 0;
 
 }
 

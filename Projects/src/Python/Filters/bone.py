@@ -14,6 +14,6 @@ cv2.imshow("Gaussiana", gaussian)
 cv2.imshow("Bordas", bordas)
 cv2.imshow("Final", final)
 
-key = cv2.waitKey()
+cv2.waitKey()
 cv2.destroyAllWindows()
 

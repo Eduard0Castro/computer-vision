@@ -30,5 +30,5 @@ cv2.imshow("Tratada", woman)
 cv2.imshow("Radio original", radio)
 cv2.imshow("Radiotividade", radio_tratada)
 
-key = cv2.waitKey()
+cv2.waitKey()
 cv2.destroyAllWindows()

@@ -19,5 +19,5 @@ cv2.imshow("Binary", binary)
 cv2.imshow("Dilated", dilate)
 cv2.imshow("Close", close)
 
-key = cv2.waitKey()
+cv2.waitKey()
 cv2.destroyAllWindows()
