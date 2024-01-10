@@ -2,6 +2,69 @@
 
 int main(){
 
+    cv::Mat coffee = cv::imread("../Projects/Images/Segmentação/coffee.jpeg");
+    cv::Mat gray, binary, canny;
+
+    cv::Mat elementoEstruturante = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
+    cv::cvtColor(coffee, gray, cv::COLOR_BGR2GRAY);
+    cv::threshold(gray, binary, 135, 255, cv::THRESH_BINARY_INV);
+    cv::morphologyEx(binary, binary, cv::MORPH_CLOSE, elementoEstruturante);
+    cv::Canny(binary, canny, 100, 200);
+    
+    cv::imshow("Coffee", coffee);
+    cv::imshow("Binary", binary);
+    cv::imshow("Canny", canny);
+
+    cv::waitKey();
+
+    return 0;
+
+}
+
+void stream_segmentation(){
+
+    cv::VideoCapture cap(0);
+    cv::Mat cam, img_hsv, mask;
+    int mat_min = 87, mat_max = 146, 
+        sat_min = 147, sat_max = 255, 
+        brilho_min = 95, brilho_max = 255;
+
+    cv::namedWindow("Barra de seleção", cv::WINDOW_AUTOSIZE);
+
+    cv::createTrackbar("Mat min", "Barra de seleção", &mat_min, 255);
+    cv::createTrackbar("Mat  max", "Barra de seleção", &mat_max, 255);
+
+    cv::createTrackbar("Sat min", "Barra de seleção", &sat_min, 255);
+    cv::createTrackbar("Sat max", "Barra de seleção", &sat_max, 255);
+
+    cv::createTrackbar("Brilho min", "Barra de seleção", &brilho_min, 255);
+    cv::createTrackbar("Brilho max", "Barra de seleção", &brilho_max, 255);
+
+    while(true){
+
+        cap.read(cam);
+        
+        cv::flip(cam, cam, 1);
+        cv::cvtColor(cam, img_hsv, cv::COLOR_BGR2HSV);
+
+        cv::Scalar min (mat_min, sat_min, brilho_min);
+        cv::Scalar max (mat_max, sat_max, brilho_max);  
+
+        cv::inRange(img_hsv, min, max, mask);
+        cv::morphologyEx(mask, mask, cv::MORPH_CLOSE,
+                         cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)));
+
+        cv::imshow("Cam", cam);
+        cv::imshow("Mascara", mask);
+
+        if (cv::waitKey(1) >= 0) break;
+
+    }
+    exit(0);
+}
+
+void otsu(){
+
     /*O algoritmo de Nobuyuki Otsu calcula o threshold de acordo com a imagem 
     carregada. Dessa forma, pode-se binarizar a imagem de uma forma um tanto quanto
     mais precisa do que simplesmente testar o valores com a binarização comum.*/
@@ -21,7 +84,6 @@ int main(){
     cout << "Threshold by Otsu algorithm: " << otsu << endl;
 
     cv::waitKey();
-    return 0;
 
 }
 
