@@ -2,6 +2,108 @@
 
 int main(){
 
+    /*O algoritmo de Nobuyuki Otsu calcula o threshold de acordo com a imagem 
+    carregada. Dessa forma, pode-se binarizar a imagem de uma forma um tanto quanto
+    mais precisa do que simplesmente testar o valores com a binarização comum.*/
+
+    cv::Mat coffee = cv::imread("../Projects/Images/Segmentação/coffee.jpeg");
+    cv::Mat gray, binary, binary_otsu;
+    double otsu; 
+
+    cv::cvtColor(coffee, gray, cv::COLOR_BGR2GRAY);
+    cv::threshold(gray, binary, 135, 255, cv::THRESH_BINARY_INV);
+    otsu = cv::threshold(gray, binary_otsu, 0, 255, (cv::THRESH_BINARY_INV + cv::THRESH_OTSU));
+
+    cv::imshow("Coffee", coffee);
+    cv::imshow("Binary", binary);
+    cv::imshow("Otsu Binary", binary_otsu);
+
+    cout << "Threshold by Otsu algorithm: " << otsu << endl;
+
+    cv::waitKey();
+    return 0;
+
+}
+
+void adaptativa(){
+
+    /*Quando a iluminação na imagem não é uniforme, pode-se utilizar a chamada
+    binarização adaptativa para oferecer um processo de binarização sem perdas
+    significativas para a imagem. 
+    O problema desse processo é que nem sempre ele representa o preenchimento da
+    imagem da forma correta, sendo mais útil para imagens com números e letras
+    como o exemplo do sudoku: */
+
+    cv::Mat pills = cv::imread("../Projects/Images/Segmentação/pills.jpeg");
+    cv::Mat sudoku = cv::imread("../Projects/Images/Segmentação/sudoku.jpeg");
+    cv::Mat median, binary, sudoku_perspective, binary_sudoku, gray_sudoku;
+    ImagesProcessing pers(sudoku);
+
+
+    //Binary pills
+
+    cv::imshow("Pills", pills);
+
+    //Binarização global:
+    cv::threshold(pills, binary, 70, 255, cv::THRESH_BINARY);
+    cv::morphologyEx(binary, binary, cv::MORPH_ELLIPSE, 
+                     cv::getStructuringElement(cv::MORPH_OPEN, cv::Size(3,3)));
+    cv::imshow("Global Binary Pills", binary);
+
+    //Binarização adaptativa:
+    cv::cvtColor(pills, pills, cv::COLOR_BGR2GRAY);
+    cv::medianBlur(pills, median, 7);
+    cv::adaptiveThreshold(median, binary, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, 
+                          cv::THRESH_BINARY_INV, 11, 5);
+    cv::imshow("Binary", binary);
+
+
+    //Binary sudoku:
+
+    sudoku_perspective = pers.warp(55, 99, 337, 99, 55, 395, 337, 392, 282, 292);
+
+    cv::imshow("Sudoku perspective", sudoku_perspective);
+
+
+    //Binarização global:
+    cv::threshold(sudoku_perspective, binary_sudoku, 125, 255, cv::THRESH_BINARY_INV);
+    cv::imshow("Global Binary Sudoku", binary_sudoku);
+
+    //Binarização adaptiva:
+    cv::cvtColor(sudoku_perspective, gray_sudoku, cv::COLOR_BGR2GRAY);
+    cv::adaptiveThreshold(gray_sudoku, binary_sudoku, 255,
+                          cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY_INV, 11, 10);
+    cv::imshow("Adaptative binary", binary_sudoku);
+
+
+    cv::waitKey();
+
+}
+
+void coffee_segmentation(){
+
+    cv::Mat coffee = cv::imread("../Projects/Images/Segmentação/coffee.jpeg");
+    cv::Mat c_gray = cv::imread("../Projects/Images/Segmentação/gray_coffee.bmp");
+    cv::Mat gray, binary, elementoEstruturante;
+
+    cv::cvtColor(coffee, gray, cv::COLOR_BGR2GRAY);
+
+    elementoEstruturante = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
+
+    cv::threshold(gray, binary, 135, 255, cv::THRESH_BINARY_INV);
+    cv::imshow("First Binary", binary);
+    cv::morphologyEx(binary, binary, cv::MORPH_CLOSE, 
+                     elementoEstruturante, cv::Point(-1,-1), 1);
+    cv::erode(binary, binary, elementoEstruturante, cv::Point(-1,-1), 1);
+
+    cv::imshow("Coffee", coffee);
+    cv::imshow("Binary coffee", binary);
+
+    cv::waitKey(0);
+}
+
+void andromeda(){
+
     cv::Mat andromeda = cv::imread("../Projects/Images/Morfologia/andromeda.bmp");
     cv::Mat elementoEstruturante, top_hat;
 
@@ -13,8 +115,6 @@ int main(){
     cv::imshow("Sem andromeda", top_hat);
 
     cv::waitKey(0);
-
-    return 0;
 
 }
 
@@ -324,7 +424,7 @@ void geometry_operations(){
     //Obtendo a matriz de translação:
     cv::Mat m_translacao = (cv::Mat_<float>(2,3) << 1, 0, 100, 0, 1, 100);
 
-    //Aplicando a matriz na imagem original e gerando a imagem rotacionada:
+    //Aplicando as matrizes na imagem original e gerando as imagens:
     cv::warpAffine(img, rotated, m_rotacao, cv::Size(img.cols, img.cols));
     cv::warpAffine(img, translated, m_translacao, cv::Size(img.cols, img.cols));
 
