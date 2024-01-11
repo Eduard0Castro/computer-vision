@@ -2,6 +2,30 @@
 
 int main(){
 
+    cv::Mat chip1 = cv::imread("../Projects/Images/Segmentação/cap_ficha1.jpeg");
+    cv::Mat chip2 = cv::imread("../Projects/Images/Segmentação/cap_ficha2.jpeg");
+    cv::Mat sub, mask, end;
+
+    cv::Vec3b min (0,120,120);
+    cv::Vec3b max (180,255,255);
+
+    cv::subtract(chip2, chip1, sub);
+    cv::imshow("Sub", sub);
+    cv::cvtColor(sub, sub, cv::COLOR_BGR2HSV);
+    cv::inRange(sub, min, max, mask);
+    cv::morphologyEx(mask, mask, cv::MORPH_CLOSE, 
+                     cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(10,10)));
+
+    cv::imshow("Mask", mask);
+
+    cv::waitKey();
+
+    return 0;
+
+}
+
+void canny_coffee_segmentation(){
+
     cv::Mat coffee = cv::imread("../Projects/Images/Segmentação/coffee.jpeg");
     cv::Mat gray, binary, canny;
 
@@ -16,9 +40,6 @@ int main(){
     cv::imshow("Canny", canny);
 
     cv::waitKey();
-
-    return 0;
-
 }
 
 void stream_segmentation(){
