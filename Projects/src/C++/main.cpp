@@ -2,6 +2,55 @@
 
 int main(){
 
+    cv::Mat square = cv::imread("../Projects/Images/Extração/square.jpeg");
+    cv::Mat triangle = cv::imread("../Projects/Images/Extração/triangle.jpeg");
+    cv::Mat circle = cv::imread("../Projects/Images/Extração/circle.jpeg");
+    cv::Mat canny, binary_t, gray, image;
+    vector<vector<cv::Point>> contours;
+    double area = 0, perimetro = 0;
+
+    image = circle;
+
+    cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+    cv::threshold(gray, binary_t, 127, 255, cv::THRESH_BINARY);
+
+    /*Os melhores valores para canny, foram com as imagens em binário, porém
+    para o caso do triângulo, os contornos não se fecharam, o que prejudicou o calculo 
+    do perímetro e da área da primeira forma. Isso se resolveria colocando como input a 
+    imagem em escala de cinza, porém os valores das outras formas erram por grandes margens.*/
+    cv::Canny(binary_t, canny, 200, 250);
+
+    //Primeira forma para encontrar área e perímetro:
+    cv::findContours(canny, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+    area = cv::contourArea(contours[0]);
+    perimetro = cv::arcLength(contours[0], true);
+
+    cout << "Área: " << area << endl;
+    cout << "Perímetro: " << perimetro << endl;
+
+
+    //Segunda forma para encontrar área e perímetro:
+    area = 0;
+    perimetro = 0;
+    for (int x = 0; x < image.cols; x++){
+        for(int y = 0; y < image.rows; y++){
+            if(binary_t.at<uchar>(x, y) == 255)
+                area += 1;
+
+            if (canny.at<uchar>(x,y) == 255)
+                perimetro += 1;
+        }
+    }
+
+    cout << "\nContagem área: " << area << endl;
+    cout << "Contagem perímetro: " << perimetro << endl;
+
+    return 0;
+
+}
+
+void chips_segmentation(){
+
     cv::Mat chip1 = cv::imread("../Projects/Images/Segmentação/cap_ficha1.jpeg");
     cv::Mat chip2 = cv::imread("../Projects/Images/Segmentação/cap_ficha2.jpeg");
     cv::Mat sub, mask, end;
@@ -9,6 +58,10 @@ int main(){
     cv::Vec3b min (0,120,120);
     cv::Vec3b max (180,255,255);
 
+    /*Segmentação por movimento (subtract) e depois por cor para identificar a última
+    posição da ficha, que é a única que aparece em vermelho pela operação da subtração.
+    A função "inRange" pega os valores máximos e mínimos de espaço HSV da imagem subtraí-
+    da e transforma em máscara só com os pixels que estão entre os valores apontados */
     cv::subtract(chip2, chip1, sub);
     cv::imshow("Sub", sub);
     cv::cvtColor(sub, sub, cv::COLOR_BGR2HSV);
@@ -20,16 +73,19 @@ int main(){
 
     cv::waitKey();
 
-    return 0;
-
 }
 
 void canny_coffee_segmentation(){
 
+    //Segmentação por bordas:
     cv::Mat coffee = cv::imread("../Projects/Images/Segmentação/coffee.jpeg");
     cv::Mat gray, binary, canny;
 
     cv::Mat elementoEstruturante = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3));
+
+    /*Passos: 1- Passar para escala de cinza
+              2- Operação de fechamento para corrigir falhas internas da binarização
+              3- Aplicar Canny para segmentar a imagem binária pelas bordas*/
     cv::cvtColor(coffee, gray, cv::COLOR_BGR2GRAY);
     cv::threshold(gray, binary, 135, 255, cv::THRESH_BINARY_INV);
     cv::morphologyEx(binary, binary, cv::MORPH_CLOSE, elementoEstruturante);
