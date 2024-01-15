@@ -3,13 +3,18 @@ from pathlib import Path
 
 path = Path().absolute().parent.parent
 
-rolamento = cv2.imread(f"{path}/Images/Segmentação/sudoku.jpeg")
+rolamento = cv2.imread(f"{path}/Images/Extração/rodela.jpeg")
+
+x1 = 0
+x2 = 500
+for i in range(0,3):
+    cut = rolamento[0:500, x1:x2]
+    x1 += 540
+    x2 += 540
+    print(x2)
 
 
-cut = rolamento[0:500,0:500]
-cv2.imshow("Rolamento", cut)
-
-cv2.imwrite(f"{path}/Images/Segmentação/sudoku.jpeg", cut)
+    cv2.imwrite(f"{path}/Images/Extração/rodela{i+1}.jpeg", cut)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
