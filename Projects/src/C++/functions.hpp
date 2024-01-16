@@ -21,6 +21,69 @@ cv::Moments Hu(cv::Mat src){
 /*================================================================================================*/
 /*======================================Funções main.cpp==========================================*/
 
+
+void vertices (){
+
+    cv::Mat square = cv::imread("../Projects/Images/Extração/square.jpeg", 0);
+    cv::Mat triangle = cv::imread("../Projects/Images/Extração/triangle.jpeg", 0);
+    cv::Mat image;
+    vector<vector<cv::Point>> contours;
+    vector <cv::Point> vertices;
+    int tot_vertices;
+    double perimetro = 0;
+
+    image = triangle;
+    
+    cv::threshold(image, image, 127, 255, cv::THRESH_BINARY);
+    cv::findContours(image, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+    perimetro = cv::arcLength(contours[0], true);
+
+    // O epsilon indica a precisão da aproiximação da curva original a um polígono
+    cv::approxPolyDP(contours[0], vertices, 0.1*perimetro, true);
+
+    //O total de vértice é contabilizado através do tamanho do vetor gerado pela approxPoly
+    tot_vertices = vertices.size();
+
+    cout << tot_vertices << endl;
+    cv::imshow("Square", image);
+    
+    cv::waitKey();
+}
+
+void drawForms(){
+
+    cv::Mat puzzle = cv::imread("../Projects/Images/Extração/puzzle.bmp");
+    cv::Mat gray, binary, copy = puzzle.clone(), copy_ellipse = puzzle.clone();
+    vector<vector<cv::Point>> contours;
+    cv::Rect retan;
+    cv::Point2f center;
+    float radius;
+    cv::RotatedRect ellipse;
+
+    cv::cvtColor(puzzle, gray, cv::COLOR_BGR2GRAY);
+    cv::threshold(gray, binary, 127, 255, cv::THRESH_BINARY);
+
+
+    //Retângulo envolvente:
+    cv::findContours(binary, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+    retan = cv::boundingRect(contours[0]);
+    cv::rectangle(puzzle, retan, cv::Scalar(0,255,0), 1);
+    cv::imshow("Puzzle Rect", puzzle);
+
+
+    //Círculo envolvente:
+    cv::minEnclosingCircle(contours[0], center, radius );
+    cv::circle(copy, center, radius, cv::Scalar(0,255,0), 1);
+    cv::imshow("Puzzle circle", copy);
+
+
+    //Elipse envolvente:
+    ellipse = cv::fitEllipse(contours[0]);
+    cv::ellipse(copy_ellipse, ellipse, cv::Scalar(0, 255, 0), 1);
+    cv::imshow("Puzzle ellipse", copy_ellipse);
+
+    cv::waitKey();
+}
 void formats(){
 
     cv::Mat square = cv::imread("../Projects/Images/Extração/square.jpeg");
@@ -161,8 +224,9 @@ void stream_segmentation(){
 void otsu(){
 
     /*O algoritmo de Nobuyuki Otsu calcula o threshold de acordo com a imagem 
-    carregada. Dessa forma, pode-se binarizar a imagem de uma forma um tanto quanto
-    mais precisa do que simplesmente testar o valores com a binarização comum.*/
+    carregada (baseado no histograma da imagem). Dessa forma, pode-se binarizar
+    a imagem de uma forma um tanto quanto mais precisa do que simplesmente 
+    testar o valores com a binarização comum.*/
 
     cv::Mat coffee = cv::imread("../Projects/Images/Segmentação/coffee.jpeg");
     cv::Mat gray, binary, binary_otsu;
