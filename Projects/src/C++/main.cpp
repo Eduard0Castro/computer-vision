@@ -3,25 +3,25 @@
 
 int main(){
 
+    cv::Mat selecao = cv::imread("../Projects/Images/HaarCascade/selecao.jpg");
+    cv::CascadeClassifier face_cascade;
+    string haarcascade = "../Projects/XML/haarcascade_frontalface_default.xml";
+    cv::Mat gray;
+    vector<cv::Rect> detects;
 
-    cv::Mat hole_1 = cv::imread("../Projects/Images/Extração/hole_1.bmp", 0);
-    cv::Mat hole_2 = cv::imread("../Projects/Images/Extração/hole_2.bmp", 0);
-    cv::Mat hole_3 = cv::imread("../Projects/Images/Extração/hole_3.bmp", 0);
-    vector<vector<cv::Point>> contours;
-    int num_holes = 0;
-    cv::Mat image = hole_3;
+    cv::cvtColor(selecao, gray, cv::COLOR_BGR2GRAY);
 
-    cv::threshold(image, image, 127, 255, cv::THRESH_BINARY);
-    cv::findContours(image, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+    face_cascade.load(haarcascade);
+    face_cascade.detectMultiScale(gray, detects, 1.3, 5, 0, cv::Size(30,30));
 
-    //Subtrai-se 1 para desconsiderar o contorno do objeto em si
-    num_holes = contours.size() - 1;
+    for (int i = 0; i < detects.size(); i++){
+        cv::rectangle(selecao, detects[i], cv::Scalar(0,255,0), 2);
+    }
 
-    cout << "Furos: " << num_holes << endl;
-
-    cv::imshow("Holes", image);
-
+    cout << "Número de faces: " << detects.size() << endl;
+    cv::imshow("Seleção", selecao);
     cv::waitKey();
+   
 
     return 0;
 
