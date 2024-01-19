@@ -19,7 +19,31 @@ cv::Moments Hu(cv::Mat src){
 }
 
 /*================================================================================================*/
-/*======================================Funções main.cpp==========================================*/
+/*========================================Funções main.cpp========================================*/
+
+void haarCascade_FaceDetection(){
+
+
+    cv::Mat selecao = cv::imread("../Projects/Images/HaarCascade/selecao.jpg");
+    cv::CascadeClassifier face_cascade;
+    string haarcascade = "../Projects/XML/haarcascade_frontalface_default.xml";
+    cv::Mat gray;
+    vector<cv::Rect> detects;
+
+    cv::cvtColor(selecao, gray, cv::COLOR_BGR2GRAY);
+
+    face_cascade.load(haarcascade);
+    face_cascade.detectMultiScale(gray, detects, 1.3, 5, 0, cv::Size(30,30));
+
+    for (int i = 0; i < detects.size(); i++){
+        cv::rectangle(selecao, detects[i], cv::Scalar(0,255,0), 2);
+    }
+
+    cout << "Número de faces: " << detects.size() << endl;
+    cv::imshow("Seleção", selecao);
+    cv::waitKey();
+    
+}
 
 void hole(){
     
@@ -60,7 +84,7 @@ void vertices (){
     cv::findContours(image, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
     perimetro = cv::arcLength(contours[0], true);
 
-    // O epsilon indica a precisão da aproiximação da curva original a um polígono
+    // O epsilon indica a precisão da aproximação da curva original a um polígono
     cv::approxPolyDP(contours[0], vertices, 0.1*perimetro, true);
 
     //O total de vértice é contabilizado através do tamanho do vetor gerado pela approxPoly
