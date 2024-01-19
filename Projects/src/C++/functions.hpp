@@ -21,6 +21,96 @@ cv::Moments Hu(cv::Mat src){
 /*================================================================================================*/
 /*========================================Funções main.cpp========================================*/
 
+void formats_video(){
+
+    cv::String path = "../Projects/Vídeos/formas-geometricas-480.mov";
+    cv::VideoCapture video (path);
+    cv::Mat frame, gray, binary;
+    vector<int> medidos;
+    int index = 0, media = 0, vertices = 0, anteriores = 0, perimetro = 0;
+    vector<vector<cv::Point>> contours;
+    vector <cv::Point> poligono;
+    cv::RotatedRect rotated;
+    cv::Point2f center;
+    float radius;
+
+    for (int i = 0; i < 7; i++){
+        medidos.push_back(0);
+        cout << medidos[i] << " ";
+
+    }
+
+    cout << endl;
+
+    while (true){
+
+        video.read(frame);
+        if (frame.empty()) break;
+        
+        cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+        cv::threshold(gray, binary, 127, 255, cv::THRESH_BINARY);
+
+        media = int(cv::mean(binary)[0]);
+
+        //Descartando frames pretos:
+        if (media != 0){
+
+            //Descartando frames em movimento:
+            if(media == int(cv::mean(medidos)[0])){
+
+                cv::findContours(binary, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+                perimetro = cv::arcLength(contours[0], true);
+                cv::approxPolyDP(contours[0], poligono, 0.03*perimetro, true);
+                vertices = poligono.size();
+
+                cv::minEnclosingCircle(poligono, center, radius);
+                cv::circle(frame, center, radius + 5, cv::Scalar(0, 255, 0), 2);
+
+
+                if (vertices != anteriores){
+
+                    anteriores = vertices;
+                    switch (vertices)
+                    {
+                    case 3:
+                        cout << "Triângulo" << endl; 
+                        break;
+
+                    case 4:
+                        cout << "Quadrilátero" << endl;
+                        break;
+                        
+                    default:
+
+                        if (vertices > 7){
+                            cout << "Círculo" << endl;
+
+                        }
+
+                        else    
+                            break;
+                    }
+                }
+
+            }
+
+        medidos[index] = media;
+
+        if (index == 6)
+            index = -1;
+
+        index ++;
+
+        }
+
+        cv::imshow("Video", frame);
+
+        if (cv::waitKey(10) >= 0) break;
+        
+    }
+
+}
+
 void haarCascade_FaceDetection(){
 
 
