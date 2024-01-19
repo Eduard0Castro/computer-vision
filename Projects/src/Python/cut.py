@@ -3,13 +3,10 @@ from pathlib import Path
 
 path = Path().absolute().parent.parent
 
-rolamento = cv2.imread(f"{path}/Images/Morfologia/engrenagem.bmp")
+rolamento = cv2.imread(f"{path}/Images/Extração/puzzle.bmp")
 
-
-cut = rolamento[0:500,0:500]
-cv2.imshow("Rolamento", rolamento)
-
-cv2.imwrite(f"{path}/Images/Morfologia/engrenagem1.bmp", cut)
+cut = rolamento[0:500, 0:500]
+cv2.imwrite(f"{path}/Images/Extração/puzzle.bmp", cut)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
