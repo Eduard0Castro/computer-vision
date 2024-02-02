@@ -4,64 +4,46 @@
 
 int main(){
 
-    cv::String path = "../Projects/Vídeos/objetos-coloridos-480.mov";
-    cv::VideoCapture video(path);
-    cv::Mat frame;
-    int contr = 0, contb = 0, contv = 0;
-    cv::Scalar media;
-    double maiord = 0;
-    int index = 0, lastscreen = 0;
+    cv::String path = "../Projects/Vídeos/movimentacao.mov";
+    cv::VideoCapture cap (path);
+    cv::Mat frame, hsv, binary;
+    vector<vector<cv::Point>> contours;
+    vector<cv::Point> polygon;
+    cv::Rect retan;
+    cv::Scalar min (160,100,100), max (200, 255, 255);
+    int perimetro = 0;
 
+    while (cv::waitKey(10) < 0){
+        cap.read(frame);
 
-    while (true){
+        if (frame.empty())
+            break;
+
+        cv::cvtColor(frame, hsv, cv::COLOR_BGR2HSV);
+
+        cv::inRange(hsv, min, max, binary);
+        cv::morphologyEx(binary, binary, cv::MORPH_CLOSE, 
+                        cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size (9,9)),
+                        cv::Point(-1,-1), 2);
         
-        index ++;
-        video.read(frame);
-        if (frame.empty()) break;
+        cv::findContours(binary, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
 
-        media = cv::mean(frame);
-        maiord = max(media[0], media[1]);
-        maiord = max(maiord, media[2]);
-
-        if (index == 30){
-            if (int(media[0]) == int(media[2])){
-                lastscreen = 0;
-            }
-
-            else{
-
-                if (lastscreen == 0){
-                    if (media[1] == maiord){
-                        cout << "Tampa Verde!" << endl;
-                        contv ++;
-                    }
-                    else if (media[2] ==  maiord){
-                        cout << "Tampa Vermelha!" << endl;
-                        contr++;
-                    }
-
-                    else{
-                        cout << "Tampa Azul!" << endl;
-                        contb++;
-                    }
-
-                    lastscreen = 1;
-                }
+        if (contours.size() >= 1){
+            perimetro = cv::arcLength(contours[0], true);
+            cv::approxPolyDP(contours[0], polygon, 0.1*perimetro, true);
+            retan = cv::boundingRect(polygon);
+            cv::rectangle(frame, retan, cv::Scalar(0,255,0), 2);
+       
             
-            }
-        index = 0;
         }
-
-        cv::imshow("Frame", frame);
-
-        if (cv::waitKey(10) >= 0) break;
+        cv::imshow("Original", frame);
+        cv::imshow("Video", binary);
 
 
     }
 
-    cout << "Tampas azuis: " << contb << endl;
-    cout << "Tampas verdes: " << contv << endl;
-    cout << "Tampaz vermelhas: " << contr << endl;
+    cap.release();
+    cv::destroyAllWindows();
 
     return 0;
 
