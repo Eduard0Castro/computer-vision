@@ -32,6 +32,8 @@ class ImagesProcessing{
         void cut();
         cv::Mat warp(float, float, float, float, float, float, float, float, float, float);
         cv::Mat drawContours();
+        cv::Mat binary(int);
+        cv::Moments Hu(int);
 };
 
 cv::Mat ImagesProcessing::negative(){
@@ -233,6 +235,23 @@ cv::Mat ImagesProcessing::drawContours(){
 
     cout << endl << cont << endl;
     return contours;
+
+}
+
+cv::Mat ImagesProcessing::binary(int threshold){
+    cv::Mat gray, binary;
+    cv::cvtColor(copy, gray, cv::COLOR_BGR2GRAY);
+    cv::threshold(gray, binary, threshold, 255, cv::THRESH_BINARY_INV);
+    return binary;
+}
+
+cv::Moments ImagesProcessing::Hu(int threshold){
+    cv::Moments moment;
+    cv::Mat hu;
+    cv::Mat binary = ImagesProcessing::binary(threshold);
+    moment = cv::moments(binary, true);
+    cv::HuMoments(moment, hu);
+    return moment;
 
 }
 
