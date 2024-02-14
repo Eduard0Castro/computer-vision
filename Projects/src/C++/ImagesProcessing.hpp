@@ -68,7 +68,7 @@ cv::Mat ImagesProcessing::negative(){
     while (coordenadas[3] < 0 || coordenadas[3] > rows);
 
     for (int i = coordenadas[0]; i <= coordenadas[2]; i++){
-        for (int j = coordenadas[1]; j < coordenadas[3]; j++){
+        for (int j = coordenadas[1]; j <= coordenadas[3]; j++){
             neg.at<cv::Vec3b>(j,i)[0] = 255 - copy.at<cv::Vec3b>(j,i)[0];
             neg.at<cv::Vec3b>(j,i)[1] = 255 - copy.at<cv::Vec3b>(j,i)[1];
             neg.at<cv::Vec3b>(j,i)[2] = 255 - copy.at<cv::Vec3b>(j,i)[2];

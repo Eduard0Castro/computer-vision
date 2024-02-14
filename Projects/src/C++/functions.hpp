@@ -156,7 +156,6 @@ void formats_video(){
 
     for (int i = 0; i < 7; i++){
         medidos.push_back(0);
-        cout << medidos[i] << " ";
 
     }
 
