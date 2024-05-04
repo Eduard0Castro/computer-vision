@@ -11,12 +11,12 @@ while cv2.waitKey(1) < 0:
     # frame = cv2.flip(frame, 1)
     hands, img = hand_detector.findHands(frame, True, True)
 
-    if len(hands) > 1:
+    if len(hands) > 0:
         handOne = hands[0]
-        handTwo = hands[1]
+        # handTwo = hands[1]
 
         lmListOne = handOne["lmList"]
-        lmListTwo = handTwo["lmList"]
+        # lmListTwo = handTwo["lmList"]
 
         bbox = handOne["bbox"]
         center = handOne["center"]
@@ -29,7 +29,7 @@ while cv2.waitKey(1) < 0:
 
 
         distance, info, img = hand_detector.findDistance(tipIndexFingerOne, tipIndexFingerTwo, 
-                                                         img, color=(0,255,0), scale=3)
+                                                            img, color=(0,255,0), scale=3)
         print(distance)
 
     cv2.imshow("Hands", img)

@@ -29,11 +29,11 @@ while cv2.waitKey(1) < 0:
     lmList, bbox = detector.findPosition(img, draw=False, bboxWithHands=False)
 
     if lmList:
-        distance, img, info = detector.findDistance(lmList[11][0:2],
-                                                    lmList[15][0:2],
-                                                    img=img, 
-                                                    color=(0,255,0), 
-                                                    scale=5)
+        # distance, img, info = detector.findDistance(lmList[11][0:2],
+        #                                             lmList[15][0:2],
+        #                                             img=img, 
+        #                                             color=(0,255,0), 
+        #                                             scale=5)
         
         angle, img = detector.findAngle(lmList[11][0:2],
                                         lmList[13][0:2],
@@ -44,6 +44,7 @@ while cv2.waitKey(1) < 0:
                                 lmList[14][0:2],
                                 lmList[16][0:2], img, 
                                 (0,0,255), 10)
+        
         
         isClosedSixty = detector.angleCheck(myAngle=angle,
                                             targetAngle=60,
