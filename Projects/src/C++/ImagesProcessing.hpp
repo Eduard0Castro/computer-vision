@@ -32,6 +32,8 @@ class ImagesProcessing{
         void cut();
         cv::Mat warp(float, float, float, float, float, float, float, float, float, float);
         cv::Mat drawContours();
+        cv::Mat binary(int);
+        cv::Moments Hu(int);
 };
 
 cv::Mat ImagesProcessing::negative(){
@@ -66,7 +68,7 @@ cv::Mat ImagesProcessing::negative(){
     while (coordenadas[3] < 0 || coordenadas[3] > rows);
 
     for (int i = coordenadas[0]; i <= coordenadas[2]; i++){
-        for (int j = coordenadas[1]; j < coordenadas[3]; j++){
+        for (int j = coordenadas[1]; j <= coordenadas[3]; j++){
             neg.at<cv::Vec3b>(j,i)[0] = 255 - copy.at<cv::Vec3b>(j,i)[0];
             neg.at<cv::Vec3b>(j,i)[1] = 255 - copy.at<cv::Vec3b>(j,i)[1];
             neg.at<cv::Vec3b>(j,i)[2] = 255 - copy.at<cv::Vec3b>(j,i)[2];
@@ -233,6 +235,23 @@ cv::Mat ImagesProcessing::drawContours(){
 
     cout << endl << cont << endl;
     return contours;
+
+}
+
+cv::Mat ImagesProcessing::binary(int threshold){
+    cv::Mat gray, binary;
+    cv::cvtColor(copy, gray, cv::COLOR_BGR2GRAY);
+    cv::threshold(gray, binary, threshold, 255, cv::THRESH_BINARY_INV);
+    return binary;
+}
+
+cv::Moments ImagesProcessing::Hu(int threshold){
+    cv::Moments moment;
+    cv::Mat hu;
+    cv::Mat binary = ImagesProcessing::binary(threshold);
+    moment = cv::moments(binary, true);
+    cv::HuMoments(moment, hu);
+    return moment;
 
 }
 

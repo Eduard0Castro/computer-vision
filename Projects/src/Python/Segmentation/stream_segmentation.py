@@ -13,17 +13,15 @@ brilho_max = 255
 
 cv2.namedWindow("Barra de Selecao", cv2.WINDOW_AUTOSIZE)
 
-def Trackbars(value):
-    pass
 
-cv2.createTrackbar("Mat Min", "Barra de Selecao", mat_min, 255, Trackbars)
-cv2.createTrackbar("Mat Max", "Barra de Selecao", mat_max, 255, Trackbars)
+cv2.createTrackbar("Mat Min", "Barra de Selecao", mat_min, 255, lambda value:value)
+cv2.createTrackbar("Mat Max", "Barra de Selecao", mat_max, 255, lambda value:value)
 
-cv2.createTrackbar("Sat Min", "Barra de Selecao", sat_min, 255, Trackbars)
-cv2.createTrackbar("Sat Max", "Barra de Selecao", sat_max, 255, Trackbars)
+cv2.createTrackbar("Sat Min", "Barra de Selecao", sat_min, 255, lambda value:value)
+cv2.createTrackbar("Sat Max", "Barra de Selecao", sat_max, 255, lambda value:value)
 
-cv2.createTrackbar("Brilho min", "Barra de Selecao", brilho_min, 255, Trackbars)
-cv2.createTrackbar("Brilho Max", "Barra de Selecao", brilho_max, 255, Trackbars)
+cv2.createTrackbar("Brilho min", "Barra de Selecao", brilho_min, 255, lambda value:value)
+cv2.createTrackbar("Brilho Max", "Barra de Selecao", brilho_max, 255, lambda value:value)
 
 
 

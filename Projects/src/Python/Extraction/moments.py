@@ -10,7 +10,7 @@ def Hu(src):
 
     moments = cv2.moments(binary, True)
     hu = cv2.HuMoments(moments)
-
+    print(moments)
 
     # Valores tratados com transformação logaritmica apresentam
     # melhor resultado com figuras planas
