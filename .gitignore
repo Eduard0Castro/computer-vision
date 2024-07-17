@@ -2,5 +2,4 @@
 /build
 /Projects/CMakeFiles
 /Projects/Makefile
-
-
+/Projects/src/Python/CameraCalibration/dataset/*
